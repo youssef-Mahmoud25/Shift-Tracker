@@ -1,0 +1,1337 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Youssef's Shift Tracker</title>
+  
+  <!-- iOS App Setup -->
+  <meta name="apple-mobile-web-app-title" content="Youssef's Shift Tracker">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="theme-color" content="#1e1b4b">
+
+  <!-- Tailwind CSS with Class Dark Mode Enabled -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class'
+    }
+  </script>
+
+  <!-- SheetJS Library for Multi-Sheet Excel Exports (.xlsx) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
+
+  <!-- Prevent Dark Mode Flash on Load -->
+  <script>
+    (function initTheme() {
+      const savedTheme = localStorage.getItem('theme');
+      const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
+      if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
+        document.documentElement.classList.add('dark');
+      } else {
+        document.documentElement.classList.remove('dark');
+      }
+    })();
+  </script>
+  
+  <!-- Dynamic Layered iOS Icon Generator Script -->
+  <script>
+    (function generateCustomAppIcon() {
+      const canvas = document.createElement('canvas');
+      canvas.width = 512;
+      canvas.height = 512;
+      const ctx = canvas.getContext('2d');
+
+      ctx.clearRect(0, 0, 512, 512);
+
+      // BACK LAYER: Semi-Transparent Clock Overlay
+      ctx.globalAlpha = 0.45; 
+      const cx = 256, cy = 205, r = 130;
+
+      ctx.shadowColor = 'rgba(0,0,0,0.2)';
+      ctx.shadowBlur = 16;
+      ctx.shadowOffsetY = 6;
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r, 0, 2 * Math.PI);
+      ctx.fillStyle = '#64748b';
+      ctx.fill();
+
+      ctx.shadowColor = 'transparent';
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, r - 8, 0, 2 * Math.PI);
+      ctx.fillStyle = '#0f172a';
+      ctx.fill();
+
+      for (let i = 0; i < 12; i++) {
+        const angle = (i * 30) * Math.PI / 180;
+        const x1 = cx + Math.sin(angle) * (r - 28);
+        const y1 = cy - Math.cos(angle) * (r - 28);
+        const x2 = cx + Math.sin(angle) * (r - 12);
+        const y2 = cy - Math.cos(angle) * (r - 12);
+        ctx.beginPath();
+        ctx.moveTo(x1, y1);
+        ctx.lineTo(x2, y2);
+        ctx.strokeStyle = (i % 3 === 0) ? '#FFFFFF' : 'rgba(255,255,255,0.4)';
+        ctx.lineWidth = (i % 3 === 0) ? 5 : 2.5;
+        ctx.stroke();
+      }
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(-60 * Math.PI / 180);
+      ctx.beginPath();
+      ctx.moveTo(0, 12);
+      ctx.lineTo(0, -(r - 55));
+      ctx.strokeStyle = '#FFFFFF';
+      ctx.lineWidth = 9;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(60 * Math.PI / 180);
+      ctx.beginPath();
+      ctx.moveTo(0, 12);
+      ctx.lineTo(0, -(r - 32));
+      ctx.strokeStyle = '#818cf8'; 
+      ctx.lineWidth = 7;
+      ctx.lineCap = 'round';
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.save();
+      ctx.translate(cx, cy);
+      ctx.rotate(170 * Math.PI / 180);
+      ctx.beginPath();
+      ctx.moveTo(0, 16);
+      ctx.lineTo(0, -(r - 18));
+      ctx.strokeStyle = '#ef4444';
+      ctx.lineWidth = 3.5;
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.beginPath();
+      ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+      ctx.fillStyle = '#ef4444';
+      ctx.fill();
+
+      // FRONT LAYER: "YM" Text Filled with Gradient
+      ctx.globalAlpha = 1.0;
+      const grad = ctx.createLinearGradient(100, 50, 400, 350);
+      grad.addColorStop(0, '#1e1b4b'); 
+      grad.addColorStop(1, '#312e81'); 
+
+      ctx.fillStyle = grad;
+      ctx.font = '900 320px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.textBaseline = 'middle';
+      ctx.fillText('YM', 256, 205);
+
+      ctx.fillStyle = '#334155';
+      ctx.font = '700 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      ctx.textAlign = 'right';
+      ctx.textBaseline = 'alphabetic';
+      ctx.fillText("Youssef's Shift Tracker", 472, 465);
+
+      const iconUrl = canvas.toDataURL('image/png');
+      const appleIcon = document.createElement('link');
+      appleIcon.rel = 'apple-touch-icon';
+      appleIcon.href = iconUrl;
+      document.head.appendChild(appleIcon);
+
+      const favicon = document.createElement('link');
+      favicon.rel = 'icon';
+      favicon.href = iconUrl;
+      document.head.appendChild(favicon);
+    })();
+  </script>
+
+  <style>
+    body { -webkit-tap-highlight-color: transparent; }
+    /* Utility to hide horizontal scrollbar cleanly */
+    .scrollbar-none::-webkit-scrollbar { display: none; }
+    .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
+  </style>
+</head>
+<body class="bg-gradient-to-br from-slate-200/80 via-slate-100 to-indigo-100/50 dark:from-slate-950 dark:via-indigo-950/40 dark:to-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-screen pb-12 transition-colors duration-300">
+
+  <div class="max-w-md mx-auto p-4 pt-6">
+    <!-- Header with Gradient Fill, Title & Subtitle -->
+    <header class="flex justify-between items-center mb-4 bg-gradient-to-r from-slate-100/95 via-indigo-50/80 to-slate-200/80 dark:from-slate-800/90 dark:via-slate-800/70 dark:to-indigo-950/50 backdrop-blur-md p-4 rounded-2xl shadow-md border border-slate-300/50 dark:border-slate-700/60 transition-all">
+      <div class="flex items-center gap-3">
+        
+        <!-- Layered Badge -->
+        <div class="relative flex items-center justify-center w-12 h-12 bg-transparent select-none shrink-0">
+          <svg class="absolute w-10 h-10 drop-shadow-sm z-0 opacity-40" viewBox="0 0 100 100">
+            <circle cx="50" cy="50" r="46" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
+            <circle cx="50" cy="50" r="40" fill="#0f172a"/>
+            <line x1="50" y1="14" x2="50" y2="20" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <line x1="86" y1="50" x2="80" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <line x1="50" y1="86" x2="50" y2="80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <line x1="14" y1="50" x2="20" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+            <line x1="50" y1="50" x2="32" y2="28" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+            <line x1="50" y1="50" x2="70" y2="30" stroke="#818cf8" stroke-width="4" stroke-linecap="round"/>
+            <line x1="50" y1="56" x2="50" y2="18" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+            <circle cx="50" cy="50" r="4" fill="#ef4444"/>
+          </svg>
+
+          <!-- FRONT LAYER: Gradient Letters "YM" -->
+          <span class="font-black text-2xl tracking-tighter bg-gradient-to-br from-indigo-950 via-indigo-900 to-purple-900 dark:from-indigo-300 dark:via-purple-200 dark:to-indigo-100 bg-clip-text text-transparent z-10 select-none">YM</span>
+        </div>
+
+        <div class="flex flex-col">
+          <h1 class="text-base font-extrabold bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 dark:from-slate-100 dark:via-indigo-200 dark:to-slate-200 bg-clip-text text-transparent leading-tight">Youssef's Shift Tracker</h1>
+          <p id="welcome-message" onclick="openNameModal()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline tracking-wide transition-all mt-0.5">
+            Welcome, Guest 👋
+          </p>
+        </div>
+      </div>
+      
+      <div class="flex items-center gap-2">
+        <button id="theme-toggle-btn" onclick="toggleTheme()" class="p-2 rounded-xl bg-gradient-to-r from-slate-200 to-slate-300/80 dark:from-slate-700 dark:to-slate-800 hover:scale-105 transition-all text-sm shadow-sm border border-slate-300/60 dark:border-slate-600/60">
+          🌙
+        </button>
+        <span class="text-xl">😉</span>
+      </div>
+    </header>
+
+    <!-- TOP MAIN NAVIGATION TABS -->
+    <nav class="grid grid-cols-2 gap-2 mb-4 bg-gradient-to-r from-slate-300/60 via-slate-200/70 to-slate-300/60 dark:from-slate-800/90 dark:via-slate-800/60 dark:to-slate-800/90 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/50 shadow-inner">
+      <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20">
+        🏠 Home
+      </button>
+      <button id="nav-btn-weeks" onclick="switchView('weeks')" class="py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40">
+        📅 Weekly Logs
+      </button>
+    </nav>
+
+    <!-- ==================== 1. HOME VIEW ==================== -->
+    <div id="view-home" class="space-y-4">
+      
+      <!-- PUNCH & TODAY CARD WITH COOL SLATE GRADIENT BACKGROUND -->
+      <div class="bg-gradient-to-br from-slate-100/90 via-indigo-100/40 to-slate-200/60 dark:from-slate-800 dark:via-slate-800/90 dark:to-indigo-950/40 p-5 rounded-2xl shadow-md border border-indigo-200/60 dark:border-indigo-900/40 transition-colors">
+        <div class="text-center mb-3">
+          <p id="current-date-display" class="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-1"></p>
+          <div id="punch-status" class="text-lg font-bold text-slate-700 dark:text-slate-200">Not Punched In</div>
+          
+          <!-- Live Shift Duration Timer -->
+          <div id="live-timer-container" class="hidden mt-1">
+            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Shift Elapsed:</span>
+            <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider">00:00:00</div>
+          </div>
+        </div>
+        
+        <!-- Punch Action Buttons -->
+        <div id="button-row" class="mb-2">
+          <!-- Punch In Button -->
+          <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:from-emerald-700 active:to-teal-800 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm transform active:scale-[0.99]">
+            Punch In
+          </button>
+          
+          <!-- Punch Out Button -->
+          <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-700 active:from-rose-700 active:to-red-800 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-rose-500/20 transition-all text-sm hidden transform active:scale-[0.99]">
+            Punch Out
+          </button>
+
+          <!-- Reset Button -->
+          <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-300/80 dark:border-slate-600 transition-all text-xs hidden shadow-sm">
+            🔄 Reset Today
+          </button>
+        </div>
+
+        <!-- Text Under Button & Edit Trigger -->
+        <div id="punched-info-container" class="flex justify-center items-center gap-2 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
+          <span id="punched-info-text"></span>
+          <button onclick="openTodayEditModal()" class="bg-slate-200/90 dark:bg-slate-700/80 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 font-bold text-xs transition-all flex items-center gap-1 shadow-sm">
+            ✏️ Edit
+          </button>
+        </div>
+      </div>
+
+      <!-- PAY PERIOD SWIPEABLE SLIDER CARD -->
+      <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/30 p-4 rounded-2xl shadow-sm border border-slate-300/60 dark:border-slate-700/60 transition-colors">
+        <div class="flex justify-between items-center mb-2.5 px-1">
+          <label onclick="selectCurrentPayPeriod()" class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider cursor-pointer hover:underline transition-all" title="Click to jump to current pay period">
+            Pay Period (16th - 15th) 📍
+          </label>
+          <span class="text-[10px] text-slate-500 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
+        </div>
+        
+        <!-- Horizontal Scroll Container -->
+        <div id="pay-period-slider" class="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
+          <!-- Dynamic Period Chips Rendered Here -->
+        </div>
+      </div>
+
+      <!-- 4 MAIN PERIOD TOTALS CARDS (Interactive Gradient Selection) -->
+      <div class="grid grid-cols-4 gap-2">
+        <!-- Spent Card -->
+        <div id="card-spent" onclick="selectSummaryCard('spent')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+          <p id="card-spent-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Spent</p>
+          <p id="period-spent" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
+        </div>
+
+        <!-- Needed Card -->
+        <div id="card-needed" onclick="selectSummaryCard('needed')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+          <p id="card-needed-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Needed</p>
+          <p id="period-needed" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
+        </div>
+
+        <!-- Total Bal Card -->
+        <div id="card-total" onclick="selectSummaryCard('total')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+          <p id="card-total-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Total Bal</p>
+          <p id="period-balance" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
+        </div>
+
+        <!-- Punched Bal Card -->
+        <div id="card-punched" onclick="selectSummaryCard('punched')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+          <p id="card-punched-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Punched Bal</p>
+          <p id="punched-balance" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
+        </div>
+      </div>
+
+      <!-- Backup & Multi-Sheet Excel Export Actions -->
+      <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 px-1 pt-2">
+        <button onclick="exportAllPeriodsToExcel()" class="hover:text-indigo-600 dark:hover:text-indigo-400 font-semibold underline transition flex items-center gap-1">📊 Export Excel (.xlsx)</button>
+        <button onclick="exportData()" class="hover:text-indigo-600 dark:hover:text-indigo-400 underline transition">Backup JSON</button>
+        <label class="hover:text-indigo-600 dark:hover:text-indigo-400 underline cursor-pointer transition">
+          Import
+          <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
+        </label>
+      </div>
+
+    </div>
+
+    <!-- ==================== 2. WEEKLY LOGS VIEW ==================== -->
+    <div id="view-weeks" class="hidden space-y-4">
+      
+      <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/40 p-4 rounded-2xl shadow-md border border-slate-300/60 dark:border-slate-700/60 transition-colors">
+        <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2 mb-3 border-b border-slate-300/60 dark:border-slate-700">
+          <!-- Dynamic Tabs -->
+        </div>
+
+        <!-- Weekly Totals Header Card -->
+        <div id="weekly-summary-card" class="bg-gradient-to-r from-slate-200/80 via-indigo-100/50 to-slate-200/80 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-indigo-200/60 dark:border-slate-700 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
+          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-indigo-700 dark:text-indigo-400">00:00</strong></div>
+          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Needed:</span> <strong id="week-needed" class="text-slate-800 dark:text-slate-200">00:00</strong></div>
+          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Balance:</span> <strong id="week-balance" class="text-slate-700 dark:text-slate-300">00:00</strong></div>
+        </div>
+
+        <!-- Daily Logs List -->
+        <div id="logs-container" class="space-y-2">
+          <!-- Day items rendered here -->
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+  <!-- FIRST-TIME USER NAME MODAL -->
+  <div id="name-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
+      <div class="text-center mb-4">
+        <span class="text-3xl mb-2 block">👋</span>
+        <h3 class="font-extrabold text-lg bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent">Welcome to Shift Tracker</h3>
+        <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Please enter your name to personalize your app experience.</p>
+      </div>
+
+      <div class="mb-5">
+        <input type="text" id="user-name-input" placeholder="Enter your name..." class="w-full bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-3 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm text-center">
+      </div>
+
+      <button onclick="saveUserName()" class="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-indigo-500/20 text-xs transition-all transform active:scale-[0.98]">
+        Get Started 🚀
+      </button>
+    </div>
+  </div>
+
+  <!-- Pop-Up Screen Edit Modal with Gradient Styling -->
+  <div id="edit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="font-extrabold text-lg bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent" id="modal-title">Edit Entry</h3>
+        <button onclick="closeModal()" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 font-bold p-1">✕</button>
+      </div>
+      
+      <input type="hidden" id="edit-date">
+
+      <!-- Holiday Option Box -->
+      <div class="mb-4 bg-gradient-to-r from-purple-200/70 via-purple-100/60 to-indigo-200/70 dark:from-purple-950/60 dark:via-purple-900/40 dark:to-indigo-950/60 p-3 rounded-xl border border-purple-300/80 dark:border-purple-800/60 flex items-center justify-between shadow-sm">
+        <label for="edit-holiday" class="text-xs font-bold text-purple-950 dark:text-purple-200 cursor-pointer flex items-center gap-1.5">
+          <span>🎉 Mark as Holiday</span>
+          <span class="text-[10px] text-purple-700 dark:text-purple-300 font-semibold">(07:00 Credited)</span>
+        </label>
+        <input type="checkbox" id="edit-holiday" onchange="toggleHolidayInput()" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
+      </div>
+      
+      <!-- Punch In Field -->
+      <div class="mb-4" id="in-field-wrapper">
+        <label class="text-xs text-slate-600 dark:text-slate-400 font-bold block mb-1">Punch In Time</label>
+        <div class="grid grid-cols-3 gap-2">
+          <select id="edit-in-hour" onchange="autoSetAMPM('in')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          <select id="edit-in-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="00">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+          </select>
+          <select id="edit-in-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+      </div>
+      
+      <!-- Punch Out Field -->
+      <div class="mb-5" id="out-field-wrapper">
+        <div class="flex items-center justify-between mb-1">
+          <label class="text-xs text-slate-600 dark:text-slate-400 font-bold">Punch Out Time</label>
+          <label class="text-[11px] text-slate-700 dark:text-slate-300 flex items-center gap-1 cursor-pointer font-bold">
+            <input type="checkbox" id="edit-has-out" onchange="toggleOutInput()" class="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer">
+            <span>Set Punch Out</span>
+          </label>
+        </div>
+
+        <div class="grid grid-cols-3 gap-2">
+          <select id="edit-out-hour" onchange="autoSetAMPM('out')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="7">7</option>
+            <option value="8">8</option>
+            <option value="9">9</option>
+            <option value="10">10</option>
+            <option value="11">11</option>
+            <option value="12">12</option>
+            <option value="1">1</option>
+            <option value="2">2</option>
+            <option value="3">3</option>
+            <option value="4">4</option>
+            <option value="5">5</option>
+            <option value="6">6</option>
+          </select>
+          <select id="edit-out-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="00">00</option>
+            <option value="15">15</option>
+            <option value="30">30</option>
+            <option value="45">45</option>
+          </select>
+          <select id="edit-out-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
+            <option value="AM">AM</option>
+            <option value="PM">PM</option>
+          </select>
+        </div>
+      </div>
+      
+      <div class="flex gap-2">
+        <button onclick="closeModal()" class="flex-1 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 py-2.5 rounded-xl font-bold text-xs transition-all shadow-sm">
+          Cancel
+        </button>
+        <button onclick="saveManualEdit()" class="flex-1 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-500/20 transition-all transform active:scale-[0.98]">
+          Save Changes
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const DAILY_TARGET = 7;
+    let logs = JSON.parse(localStorage.getItem('shift_logs') || '{}');
+    let selectedWeek = 0;
+    let selectedCard = 'punched'; // Currently active summary card
+    let payPeriodsList = [];
+    let selectedPeriodIndex = 0;
+
+    window.onload = () => {
+      checkUserName();
+      updateThemeButtonUI();
+      document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
+      populatePayPeriods();
+      renderTodayStatus();
+      renderPeriodData();
+      setInterval(runLiveTimer, 1000);
+    };
+
+    // User Name Logic
+    function checkUserName() {
+      const storedName = localStorage.getItem('user_name');
+      if (!storedName) {
+        openNameModal();
+      } else {
+        updateWelcomeDisplay(storedName);
+      }
+    }
+
+    function openNameModal() {
+      const currentName = localStorage.getItem('user_name') || '';
+      document.getElementById('user-name-input').value = currentName;
+      document.getElementById('name-modal').classList.remove('hidden');
+    }
+
+    function saveUserName() {
+      const inputVal = document.getElementById('user-name-input').value.trim();
+      const userName = inputVal ? inputVal : 'Friend';
+      localStorage.setItem('user_name', userName);
+      updateWelcomeDisplay(userName);
+      document.getElementById('name-modal').classList.add('hidden');
+    }
+
+    function updateWelcomeDisplay(name) {
+      document.getElementById('welcome-message').innerText = `Welcome, ${name} 👋`;
+    }
+
+    function toggleTheme() {
+      const isDark = document.documentElement.classList.toggle('dark');
+      localStorage.setItem('theme', isDark ? 'dark' : 'light');
+      updateThemeButtonUI();
+    }
+
+    function updateThemeButtonUI() {
+      const isDark = document.documentElement.classList.contains('dark');
+      document.getElementById('theme-toggle-btn').innerText = isDark ? '☀️' : '🌙';
+    }
+
+    function formatHoursToHHMM(decimalHours, includePlus = false) {
+      if (decimalHours === undefined || decimalHours === null || isNaN(decimalHours)) return '00:00';
+      const isNegative = decimalHours < 0;
+      const absHours = Math.abs(decimalHours);
+      let h = Math.floor(absHours);
+      let m = Math.round((absHours - h) * 60);
+
+      if (m >= 60) {
+        h += 1;
+        m = 0;
+      }
+
+      const formattedH = String(h).padStart(2, '0');
+      const formattedM = String(m).padStart(2, '0');
+
+      let sign = '';
+      if (isNegative) {
+        sign = '-';
+      } else if (includePlus && decimalHours > 0) {
+        sign = '+';
+      }
+
+      return `${sign}${formattedH}:${formattedM}`;
+    }
+
+    function switchView(view) {
+      const homeView = document.getElementById('view-home');
+      const weeksView = document.getElementById('view-weeks');
+      const homeBtn = document.getElementById('nav-btn-home');
+      const weeksBtn = document.getElementById('nav-btn-weeks');
+
+      if (view === 'home') {
+        homeView.classList.remove('hidden');
+        weeksView.classList.add('hidden');
+        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20";
+        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40";
+      } else {
+        homeView.classList.add('hidden');
+        weeksView.classList.remove('hidden');
+        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20";
+        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40";
+      }
+    }
+
+    function saveLogs() {
+      localStorage.setItem('shift_logs', JSON.stringify(logs));
+      renderTodayStatus();
+      renderPeriodData();
+    }
+
+    function roundTime(timeStr) {
+      if (!timeStr) return '';
+      let [h, m] = timeStr.split(':').map(Number);
+      if (m > 0 && m <= 15) m = 15;
+      else if (m > 15 && m <= 30) m = 30;
+      else if (m > 30 && m <= 45) m = 45;
+      else if (m > 45) {
+        m = 0;
+        h = (h + 1) % 24;
+      }
+      return `${String(h).padStart(2, '0')}:${String(m).padStart(2, '0')}`;
+    }
+
+    function format12Hour(timeStr) {
+      if (!timeStr) return '';
+      let [h, m] = timeStr.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      h = h % 12;
+      h = h ? h : 12;
+      return `${h}:${String(m).padStart(2, '0')} ${ampm}`;
+    }
+
+    function parse24To12(time24, defaultType = 'in') {
+      if (!time24) {
+        return defaultType === 'in' 
+          ? { hour: '7', min: '00', ampm: 'AM' }
+          : { hour: '2', min: '00', ampm: 'PM' };
+      }
+      let [h, m] = time24.split(':').map(Number);
+      const ampm = h >= 12 ? 'PM' : 'AM';
+      let h12 = h % 12;
+      if (h12 === 0) h12 = 12;
+
+      let mStr = String(m).padStart(2, '0');
+      if (!['00', '15', '30', '45'].includes(mStr)) {
+        if (m > 0 && m <= 15) mStr = '15';
+        else if (m > 15 && m <= 30) mStr = '30';
+        else if (m > 30 && m <= 45) mStr = '45';
+        else mStr = '00';
+      }
+
+      return { hour: String(h12), min: mStr, ampm: ampm };
+    }
+
+    function format12To24(hourStr, minStr, ampmStr) {
+      if (!hourStr || !minStr) return '';
+      let h = parseInt(hourStr, 10);
+      if (ampmStr === 'PM' && h < 12) h += 12;
+      if (ampmStr === 'AM' && h === 12) h = 0;
+      return `${String(h).padStart(2, '0')}:${minStr}`;
+    }
+
+    function autoSetAMPM(type) {
+      const hour = parseInt(document.getElementById(`edit-${type}-hour`).value, 10);
+      const ampmEl = document.getElementById(`edit-${type}-ampm`);
+      if ([7, 8, 9, 10, 11].includes(hour)) {
+        ampmEl.value = 'AM';
+      } else if ([12, 1, 2, 3, 4, 5, 6].includes(hour)) {
+        ampmEl.value = 'PM';
+      }
+    }
+
+    function getTodayKey() {
+      const d = new Date();
+      return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+    }
+
+    function getTimeNow() {
+      const d = new Date();
+      return `${String(d.getHours()).padStart(2,'0')}:${String(d.getMinutes()).padStart(2,'0')}`;
+    }
+
+    function punchInNow() {
+      const today = getTodayKey();
+      const roundedNow = roundTime(getTimeNow());
+      logs[today] = logs[today] || {};
+      logs[today].in = roundedNow;
+      logs[today].out = '';
+      logs[today].isHoliday = false;
+      saveLogs();
+    }
+
+    function punchOutNow() {
+      const today = getTodayKey();
+      if (!logs[today] || !logs[today].in) return;
+      logs[today].out = roundTime(getTimeNow());
+      logs[today].isHoliday = false;
+      saveLogs();
+    }
+
+    function clearTodayShift() {
+      const today = getTodayKey();
+      delete logs[today];
+      saveLogs();
+    }
+
+    function openTodayEditModal() {
+      const today = getTodayKey();
+      const entry = logs[today] || { in: '', out: '', isHoliday: false };
+      openEditModal(today, entry.in, entry.out, entry.isHoliday);
+    }
+
+    function toggleHolidayInput() {
+      const isHoliday = document.getElementById('edit-holiday').checked;
+      const inSelects = ['edit-in-hour', 'edit-in-min', 'edit-in-ampm'];
+      
+      inSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.disabled = isHoliday;
+          if (isHoliday) {
+            el.classList.add('opacity-40');
+          } else {
+            el.classList.remove('opacity-40');
+          }
+        }
+      });
+
+      toggleOutInput();
+    }
+
+    function toggleOutInput() {
+      const hasOut = document.getElementById('edit-has-out').checked;
+      const isHoliday = document.getElementById('edit-holiday').checked;
+      const outSelects = ['edit-out-hour', 'edit-out-min', 'edit-out-ampm'];
+      
+      outSelects.forEach(id => {
+        const el = document.getElementById(id);
+        if (el) {
+          el.disabled = !hasOut || isHoliday;
+          if (!hasOut || isHoliday) {
+            el.classList.add('opacity-40');
+          } else {
+            el.classList.remove('opacity-40');
+          }
+        }
+      });
+    }
+
+    function renderTodayStatus() {
+      const today = getTodayKey();
+      const entry = logs[today] || { in: '', out: '', isHoliday: false };
+      
+      const punchInBtn = document.getElementById('punch-in-btn');
+      const punchOutBtn = document.getElementById('punch-out-btn');
+      const resetTodayBtn = document.getElementById('reset-today-btn');
+      const infoContainer = document.getElementById('punched-info-container');
+      const infoText = document.getElementById('punched-info-text');
+      const statusEl = document.getElementById('punch-status');
+      const timerContainer = document.getElementById('live-timer-container');
+
+      if (entry.isHoliday) {
+        punchInBtn.classList.add('hidden');
+        punchOutBtn.classList.add('hidden');
+        resetTodayBtn.classList.remove('hidden');
+        
+        infoContainer.classList.remove('hidden');
+        infoText.innerText = "Holiday marked — 07:00 credited";
+        
+        timerContainer.classList.add('hidden');
+        statusEl.innerText = "Holiday 🎉";
+        statusEl.className = "text-lg font-bold text-purple-700 dark:text-purple-400";
+      } else if (!entry.in) {
+        punchInBtn.classList.remove('hidden');
+        punchOutBtn.classList.add('hidden');
+        resetTodayBtn.classList.add('hidden');
+        infoContainer.classList.add('hidden');
+        timerContainer.classList.add('hidden');
+        statusEl.innerText = "Not Punched In";
+        statusEl.className = "text-lg font-bold text-slate-700 dark:text-slate-200";
+      } else if (entry.in && !entry.out) {
+        punchInBtn.classList.add('hidden');
+        punchOutBtn.classList.remove('hidden');
+        resetTodayBtn.classList.add('hidden');
+        
+        infoContainer.classList.remove('hidden');
+        infoText.innerText = `You punched in at ${format12Hour(entry.in)}`;
+        
+        timerContainer.classList.remove('hidden');
+        statusEl.innerText = "Punched In 🟢";
+        statusEl.className = "text-lg font-bold text-emerald-600 dark:text-emerald-400";
+      } else if (entry.in && entry.out) {
+        punchInBtn.classList.add('hidden');
+        punchOutBtn.classList.add('hidden');
+        resetTodayBtn.classList.remove('hidden');
+        
+        infoContainer.classList.remove('hidden');
+        infoText.innerText = `Punched in at ${format12Hour(entry.in)} | Punched out at ${format12Hour(entry.out)}`;
+        
+        timerContainer.classList.add('hidden');
+        statusEl.innerText = "Shift Completed ✅";
+        statusEl.className = "text-lg font-bold text-indigo-700 dark:text-indigo-400";
+      }
+    }
+
+    function runLiveTimer() {
+      const today = getTodayKey();
+      const entry = logs[today];
+
+      if (entry && entry.in && !entry.out && !entry.isHoliday) {
+        const now = new Date();
+        const [h, m] = entry.in.split(':').map(Number);
+        const startTime = new Date();
+        startTime.setHours(h, m, 0, 0);
+
+        const diffMs = now - startTime;
+        const isNegative = diffMs < 0;
+        const absMs = Math.abs(diffMs);
+
+        const hrs = Math.floor(absMs / (1000 * 60 * 60));
+        const mins = Math.floor((absMs % (1000 * 60 * 60)) / (1000 * 60));
+        const secs = Math.floor((absMs % (1000 * 60)) / 1000);
+
+        const prefix = isNegative ? '-' : '';
+        const timerEl = document.getElementById('live-timer');
+
+        timerEl.innerText = `${prefix}${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
+
+        if (isNegative) {
+          timerEl.className = "text-2xl font-black bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent tracking-wider";
+        } else {
+          timerEl.className = "text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider";
+        }
+      }
+    }
+
+    function calculateHours(inTime, outTime) {
+      if (!inTime || !outTime) return 0;
+      const [h1, m1] = inTime.split(':').map(Number);
+      const [h2, m2] = outTime.split(':').map(Number);
+      let diff = (h2 * 60 + m2) - (h1 * 60 + m1);
+      if (diff < 0) diff += 24 * 60;
+      return diff / 60;
+    }
+
+    function deleteShiftDay(dateKey, event) {
+      if (event) event.stopPropagation();
+      if (confirm(`Are you sure you want to delete entry for ${dateKey}?`)) {
+        delete logs[dateKey];
+        saveLogs();
+      }
+    }
+
+    // POPULATE & RENDER PAY PERIOD SLIDER CARDS
+    function populatePayPeriods() {
+      payPeriodsList = [];
+      const now = new Date();
+      let defaultIdx = 0;
+
+      for (let i = -4; i <= 3; i++) {
+        let start = new Date(now.getFullYear(), now.getMonth() + i, 16);
+        let end = new Date(now.getFullYear(), now.getMonth() + i + 1, 15);
+        
+        let startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        let endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        let label = `${startStr} - ${endStr}`;
+
+        let checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+        let isCurrent = (checkNow >= start && checkNow <= end);
+
+        if (isCurrent) defaultIdx = payPeriodsList.length;
+
+        payPeriodsList.push({
+          start: start.toISOString(),
+          end: end.toISOString(),
+          label: label
+        });
+      }
+
+      selectedPeriodIndex = defaultIdx;
+      renderPayPeriodSliderCards();
+    }
+
+    function renderPayPeriodSliderCards() {
+      const container = document.getElementById('pay-period-slider');
+      container.innerHTML = '';
+
+      payPeriodsList.forEach((period, idx) => {
+        const isSelected = (idx === selectedPeriodIndex);
+        const card = document.createElement('button');
+        card.id = `period-chip-${idx}`;
+        
+        if (isSelected) {
+          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/30 ring-2 ring-indigo-400/50 transition-all duration-200 cursor-pointer transform scale-[1.02]";
+        } else {
+          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-slate-700 dark:text-slate-300 bg-slate-200/90 dark:bg-slate-700/70 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300/80 dark:border-slate-600/60 transition-all duration-200 cursor-pointer opacity-90 hover:opacity-100";
+        }
+
+        card.innerText = period.label;
+        card.onclick = () => selectPayPeriod(idx);
+        container.appendChild(card);
+      });
+
+      // Auto scroll selected card into view
+      setTimeout(() => {
+        const activeChip = document.getElementById(`period-chip-${selectedPeriodIndex}`);
+        if (activeChip) {
+          activeChip.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }, 100);
+    }
+
+    function selectPayPeriod(index) {
+      selectedPeriodIndex = index;
+      renderPayPeriodSliderCards();
+      renderPeriodData();
+    }
+
+    function selectCurrentPayPeriod() {
+      const now = new Date();
+      const checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
+
+      // Find the pay period that covers today's date
+      const currentIdx = payPeriodsList.findIndex(period => {
+        const start = new Date(period.start);
+        const end = new Date(period.end);
+        return checkNow >= start && checkNow <= end;
+      });
+
+      if (currentIdx !== -1) {
+        selectPayPeriod(currentIdx);
+      }
+    }
+
+    function selectSummaryCard(cardKey) {
+      selectedCard = cardKey;
+      renderPeriodData();
+    }
+
+    function updateSummaryCardStyles(periodBalance, punchedBalance) {
+      const cards = ['spent', 'needed', 'total', 'punched'];
+
+      cards.forEach(key => {
+        const cardEl = document.getElementById(`card-${key}`);
+        const titleEl = document.getElementById(`card-${key}-title`);
+        const valEl = key === 'spent' ? document.getElementById('period-spent')
+                    : key === 'needed' ? document.getElementById('period-needed')
+                    : key === 'total' ? document.getElementById('period-balance')
+                    : document.getElementById('punched-balance');
+
+        const isActive = (selectedCard === key);
+
+        if (key === 'spent') {
+          if (isActive) {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white border-2 border-indigo-300 dark:border-indigo-400 shadow-lg shadow-indigo-500/30 scale-[1.03] ring-2 ring-indigo-400/40 z-10 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-indigo-100";
+            valEl.className = "text-sm font-extrabold mt-1 text-white";
+          } else {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-indigo-100/80 via-slate-100 to-indigo-100/40 dark:from-indigo-950/40 dark:via-slate-800 dark:to-slate-800/80 border border-indigo-200 dark:border-indigo-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-indigo-700 dark:text-indigo-400";
+            valEl.className = "text-sm font-extrabold mt-1 text-indigo-800 dark:text-indigo-400";
+          }
+        } else if (key === 'needed') {
+          if (isActive) {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-slate-700 via-slate-800 to-indigo-900 text-white border-2 border-slate-400 dark:border-slate-300 shadow-lg shadow-slate-500/30 scale-[1.03] ring-2 ring-slate-400/40 z-10 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-slate-300";
+            valEl.className = "text-sm font-extrabold mt-1 text-white";
+          } else {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-slate-200/80 via-slate-100 to-slate-200/40 dark:from-slate-700/30 dark:via-slate-800 dark:to-slate-800/80 border border-slate-300/80 dark:border-slate-700/60 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-slate-600 dark:text-slate-400";
+            valEl.className = "text-sm font-extrabold mt-1 text-slate-800 dark:text-slate-200";
+          }
+        } else if (key === 'total') {
+          const isPos = periodBalance >= 0;
+          if (isActive) {
+            const activeGradient = isPos 
+              ? "bg-gradient-to-br from-emerald-500 via-teal-600 to-indigo-600 border-2 border-emerald-300 dark:border-emerald-400 shadow-lg shadow-teal-500/30 ring-2 ring-emerald-400/40"
+              : "bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
+            cardEl.className = `p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.03] z-10 select-none`;
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-white/90";
+            valEl.className = "text-sm font-extrabold mt-1 text-white";
+          } else {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-sky-100/80 via-slate-100 to-sky-100/40 dark:from-sky-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-sky-200 dark:border-sky-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-sky-700 dark:text-sky-400";
+            valEl.className = `text-sm font-extrabold mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
+          }
+        } else if (key === 'punched') {
+          const isPos = punchedBalance >= 0;
+          if (isActive) {
+            const activeGradient = isPos 
+              ? "bg-gradient-to-br from-purple-600 via-indigo-600 to-teal-600 border-2 border-purple-300 dark:border-purple-400 shadow-lg shadow-purple-500/30 ring-2 ring-purple-400/40"
+              : "bg-gradient-to-br from-rose-600 via-purple-600 to-indigo-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
+            cardEl.className = `p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.03] z-10 select-none`;
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-white/90";
+            valEl.className = "text-sm font-extrabold mt-1 text-white";
+          } else {
+            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-purple-100/80 via-slate-100 to-indigo-100/40 dark:from-purple-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-purple-200 dark:border-purple-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-purple-700 dark:text-purple-400";
+            valEl.className = `text-sm font-extrabold mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
+          }
+        }
+      });
+    }
+
+    function renderPeriodData() {
+      if (!payPeriodsList || payPeriodsList.length === 0) return;
+
+      const period = payPeriodsList[selectedPeriodIndex];
+      if (!period) return;
+
+      const startDate = new Date(period.start);
+      const endDate = new Date(period.end);
+
+      let totalTarget = 0;
+      let totalWorked = 0;
+
+      let punchedWorked = 0;
+      let punchedTarget = 0;
+
+      let weeks = [];
+      let currentWeek = [];
+
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        const dateKey = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`;
+        const dayOfWeek = cur.getDay(); 
+        const log = logs[dateKey] || { in: '', out: '', isHoliday: false };
+        
+        let worked = 0;
+        if (log.isHoliday) {
+          worked = DAILY_TARGET;
+        } else {
+          worked = calculateHours(log.in, log.out);
+        }
+
+        let target = 0;
+        if (dayOfWeek >= 0 && dayOfWeek <= 4) {
+          target = DAILY_TARGET; 
+        }
+
+        totalTarget += target;
+        totalWorked += worked;
+
+        const hasCompletedPunch = (log.in && log.out) || log.isHoliday;
+        if (hasCompletedPunch) {
+          punchedWorked += worked;
+          punchedTarget += target;
+        }
+
+        const dayBalance = worked - target;
+
+        currentWeek.push({ 
+          dateKey, 
+          date: new Date(cur), 
+          log, 
+          worked, 
+          dayOfWeek, 
+          target, 
+          balance: dayBalance 
+        });
+
+        // Split week on Friday (dayOfWeek === 5) so the next week starts on Saturday (dayOfWeek === 6)
+        if (dayOfWeek === 5 || cur.getTime() === endDate.getTime()) {
+          weeks.push(currentWeek);
+          currentWeek = [];
+        }
+
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      const periodBalance = totalWorked - totalTarget;
+      const punchedBalance = punchedWorked - punchedTarget;
+
+      document.getElementById('period-spent').innerText = formatHoursToHHMM(totalWorked);
+      document.getElementById('period-needed').innerText = formatHoursToHHMM(totalTarget);
+      document.getElementById('period-balance').innerText = formatHoursToHHMM(periodBalance, periodBalance >= 0);
+      document.getElementById('punched-balance').innerText = formatHoursToHHMM(punchedBalance, punchedBalance >= 0);
+
+      // Update active/inactive summary card dynamic styles
+      updateSummaryCardStyles(periodBalance, punchedBalance);
+
+      renderWeeklyTabs(weeks);
+    }
+
+    function renderWeeklyTabs(weeks) {
+      const tabsContainer = document.getElementById('weekly-tabs');
+      tabsContainer.innerHTML = '';
+
+      if (selectedWeek >= weeks.length) selectedWeek = 0;
+
+      weeks.forEach((w, idx) => {
+        const btn = document.createElement('button');
+        btn.className = `px-3.5 py-1.5 text-xs rounded-xl font-bold whitespace-nowrap transition-all shadow-sm ${
+          selectedWeek === idx 
+            ? 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-indigo-500/20' 
+            : 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 text-slate-700 dark:text-slate-300 hover:scale-105'
+        }`;
+        btn.innerText = `Week ${idx + 1}`;
+        btn.onclick = () => { selectedWeek = idx; renderWeeklyTabs(weeks); };
+        tabsContainer.appendChild(btn);
+      });
+
+      const activeWeek = weeks[selectedWeek] || [];
+
+      const wSpent = activeWeek.reduce((acc, d) => acc + d.worked, 0);
+      const wNeeded = activeWeek.reduce((acc, d) => acc + d.target, 0);
+      const wBalance = wSpent - wNeeded;
+
+      document.getElementById('week-spent').innerText = formatHoursToHHMM(wSpent);
+      document.getElementById('week-needed').innerText = formatHoursToHHMM(wNeeded);
+      
+      const wBalEl = document.getElementById('week-balance');
+      if (wBalance >= 0) {
+        wBalEl.innerText = formatHoursToHHMM(wBalance, true);
+        wBalEl.className = "text-emerald-600 dark:text-emerald-400 font-bold";
+      } else {
+        wBalEl.innerText = formatHoursToHHMM(wBalance);
+        wBalEl.className = "text-rose-600 dark:text-rose-400 font-bold";
+      }
+
+      renderLogsList(activeWeek);
+    }
+
+    function renderLogsList(weekData) {
+      const container = document.getElementById('logs-container');
+      container.innerHTML = '';
+
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+
+      weekData.forEach(item => {
+        const div = document.createElement('div');
+        div.className = "flex items-center justify-between p-3 bg-gradient-to-r from-slate-100/90 via-slate-200/40 to-indigo-100/30 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-indigo-950/30 rounded-xl text-xs border border-slate-300/70 dark:border-slate-700/60 hover:from-indigo-100/70 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-indigo-950/50 transition-all shadow-sm";
+
+        const isFriday = item.dayOfWeek === 5;
+        const isSaturday = item.dayOfWeek === 6;
+        const isHoliday = item.log.isHoliday;
+        
+        let tag = '';
+        if (isHoliday) tag = '<span class="text-[10px] bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">Holiday 🎉</span>';
+        else if (isFriday) tag = '<span class="text-[10px] bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">Friday</span>';
+        else if (isSaturday) tag = '<span class="text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">OT Saturday</span>';
+
+        const day = String(item.date.getDate()).padStart(2, '0');
+        const month = String(item.date.getMonth() + 1).padStart(2, '0');
+        const year = item.date.getFullYear();
+        const dateFormatted = `${day}/${month}/${year}`;
+
+        const timeDisplay = isHoliday ? '07:00 Credited (Holiday)' : `${item.log.in ? format12Hour(item.log.in) : '--:--'} - ${item.log.out ? format12Hour(item.log.out) : '--:--'}`;
+
+        const balText = formatHoursToHHMM(item.balance, true);
+        const balClass = item.balance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400';
+
+        div.innerHTML = `
+          <div class="cursor-pointer flex-1" onclick="openEditModal('${item.dateKey}', '${item.log.in || ''}', '${item.log.out || ''}', ${!!isHoliday})">
+            <div class="font-bold text-slate-800 dark:text-slate-200">${dayNames[item.dayOfWeek]} ${dateFormatted} ${tag}</div>
+            <div class="text-slate-500 dark:text-slate-400 mt-0.5">${timeDisplay}</div>
+          </div>
+          
+          <div class="text-right mr-3 cursor-pointer" onclick="openEditModal('${item.dateKey}', '${item.log.in || ''}', '${item.log.out || ''}', ${!!isHoliday})">
+            <div class="font-bold text-slate-800 dark:text-slate-100">Spent: ${formatHoursToHHMM(item.worked)}</div>
+            <div class="text-[10px] text-slate-500 dark:text-slate-400">Need: ${formatHoursToHHMM(item.target)} | <span class="${balClass} font-semibold">${balText}</span></div>
+          </div>
+
+          <button onclick="deleteShiftDay('${item.dateKey}', event)" class="text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded font-bold transition-all" title="Delete Day">
+            🗑️
+          </button>
+        `;
+        container.appendChild(div);
+      });
+    }
+
+    function openEditModal(dateKey, inTime = '', outTime = '', isHoliday = false) {
+      document.getElementById('edit-date').value = dateKey;
+      document.getElementById('edit-holiday').checked = isHoliday;
+      document.getElementById('modal-title').innerText = `Edit ${dateKey}`;
+
+      const inParsed = parse24To12(inTime, 'in');
+      document.getElementById('edit-in-hour').value = inParsed.hour;
+      document.getElementById('edit-in-min').value = inParsed.min;
+      document.getElementById('edit-in-ampm').value = inParsed.ampm;
+
+      const hasOut = !!outTime;
+      document.getElementById('edit-has-out').checked = hasOut;
+      const outParsed = parse24To12(outTime, 'out');
+      document.getElementById('edit-out-hour').value = outParsed.hour;
+      document.getElementById('edit-out-min').value = outParsed.min;
+      document.getElementById('edit-out-ampm').value = outParsed.ampm;
+      
+      toggleHolidayInput();
+      document.getElementById('edit-modal').classList.remove('hidden');
+    }
+
+    function closeModal() {
+      document.getElementById('edit-modal').classList.add('hidden');
+    }
+
+    function saveManualEdit() {
+      const dateKey = document.getElementById('edit-date').value;
+      const isHoliday = document.getElementById('edit-holiday').checked;
+      const hasOut = document.getElementById('edit-has-out').checked;
+
+      let inVal = '';
+      let outVal = '';
+
+      if (!isHoliday) {
+        const inH = document.getElementById('edit-in-hour').value;
+        const inM = document.getElementById('edit-in-min').value;
+        const inAP = document.getElementById('edit-in-ampm').value;
+        inVal = format12To24(inH, inM, inAP);
+
+        if (hasOut) {
+          const outH = document.getElementById('edit-out-hour').value;
+          const outM = document.getElementById('edit-out-min').value;
+          const outAP = document.getElementById('edit-out-ampm').value;
+          outVal = format12To24(outH, outM, outAP);
+        }
+      }
+
+      logs[dateKey] = {
+        in: isHoliday ? '' : roundTime(inVal),
+        out: (isHoliday || !hasOut) ? '' : roundTime(outVal),
+        isHoliday: isHoliday
+      };
+
+      saveLogs();
+      closeModal();
+    }
+
+    // HELPER: BUILD DATA FOR A SINGLE PAY PERIOD SHEET
+    function buildPeriodSheetData(startDate, endDate) {
+      const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
+      let rows = [];
+      rows.push(['Date', 'Day', 'Punch In', 'Punch Out', 'Status', 'Worked', 'Needed', 'Daily Balance']);
+
+      let totalTarget = 0;
+      let totalWorked = 0;
+
+      let punchedWorked = 0;
+      let punchedTarget = 0;
+
+      let cur = new Date(startDate);
+      while (cur <= endDate) {
+        const dateKey = `${cur.getFullYear()}-${String(cur.getMonth()+1).padStart(2,'0')}-${String(cur.getDate()).padStart(2,'0')}`;
+        const dayOfWeek = cur.getDay(); 
+        const log = logs[dateKey] || { in: '', out: '', isHoliday: false };
+        
+        let worked = log.isHoliday ? DAILY_TARGET : calculateHours(log.in, log.out);
+        let target = (dayOfWeek >= 0 && dayOfWeek <= 4) ? DAILY_TARGET : 0;
+
+        totalTarget += target;
+        totalWorked += worked;
+
+        const hasCompletedPunch = (log.in && log.out) || log.isHoliday;
+        if (hasCompletedPunch) {
+          punchedWorked += worked;
+          punchedTarget += target;
+        }
+
+        let status = 'Off Day';
+        if (log.isHoliday) status = 'Holiday';
+        else if (log.in && log.out) status = dayOfWeek === 5 ? 'Friday' : (dayOfWeek === 6 ? 'OT Saturday' : 'Regular Shift');
+        else if (log.in) status = 'Punched In Only';
+
+        const inStr = log.in ? format12Hour(log.in) : '--';
+        const outStr = log.out ? format12Hour(log.out) : '--';
+        const dailyBal = worked - target;
+
+        rows.push([
+          dateKey,
+          dayNames[dayOfWeek],
+          inStr,
+          outStr,
+          status,
+          formatHoursToHHMM(worked),
+          formatHoursToHHMM(target),
+          formatHoursToHHMM(dailyBal, true)
+        ]);
+
+        cur.setDate(cur.getDate() + 1);
+      }
+
+      const totalBalance = totalWorked - totalTarget;
+      const punchedBalance = punchedWorked - punchedTarget;
+
+      rows.push([]);
+      rows.push(['--- PAY PERIOD SUMMARY ---', '', '', '', '', '', '', '']);
+      rows.push(['Total Worked / Spent', '', '', '', '', formatHoursToHHMM(totalWorked), '', '']);
+      rows.push(['Total Needed', '', '', '', '', formatHoursToHHMM(totalTarget), '', '']);
+      rows.push(['TOTAL BALANCE', '', '', '', '', formatHoursToHHMM(totalBalance, true), '', '']);
+      rows.push([]);
+      rows.push(['Punched Worked / Spent', '', '', '', '', formatHoursToHHMM(punchedWorked), '', '']);
+      rows.push(['Punched Needed', '', '', '', '', formatHoursToHHMM(punchedTarget), '', '']);
+      rows.push(['PUNCHED BALANCE', '', '', '', '', formatHoursToHHMM(punchedBalance, true), '', '']);
+
+      return rows;
+    }
+
+    // HELPER: GET ALL RELEVANT PAY PERIODS
+    function getAllPayPeriods() {
+      const dateKeys = Object.keys(logs);
+      const dates = dateKeys.map(k => new Date(k)).filter(d => !isNaN(d.getTime()));
+      const now = new Date();
+      
+      let minDate = new Date(now.getFullYear(), now.getMonth() - 2, 16);
+      let maxDate = new Date(now.getFullYear(), now.getMonth() + 1, 15);
+
+      if (dates.length > 0) {
+        const earliestLog = new Date(Math.min(...dates.map(d => d.getTime())));
+        if (earliestLog < minDate) minDate = earliestLog;
+      }
+
+      let pStart = minDate.getDate() >= 16 
+        ? new Date(minDate.getFullYear(), minDate.getMonth(), 16) 
+        : new Date(minDate.getFullYear(), minDate.getMonth() - 1, 16);
+
+      const periods = [];
+      let currentStart = new Date(pStart);
+
+      while (currentStart <= maxDate) {
+        let currentEnd = new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 15);
+        
+        let startStr = currentStart.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+        let endStr = currentEnd.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+        let label = `${startStr} - ${endStr}`;
+        
+        periods.push({
+          start: new Date(currentStart),
+          end: new Date(currentEnd),
+          label: label
+        });
+
+        currentStart = new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 16);
+      }
+
+      return periods;
+    }
+
+    // MULTI-SHEET EXPORT FUNCTION
+    function exportAllPeriodsToExcel() {
+      if (typeof XLSX === 'undefined') {
+        alert("Excel export module is loading. Please try again in a moment.");
+        return;
+      }
+
+      const wb = XLSX.utils.book_new();
+      const periods = getAllPayPeriods();
+
+      periods.forEach(period => {
+        const sheetData = buildPeriodSheetData(period.start, period.end);
+        const ws = XLSX.utils.aoa_to_sheet(sheetData);
+        
+        // Clean Excel sheet name (Max 31 chars, no special prohibited chars)
+        let sheetName = period.label.replace(/[\/\\\?\*\[\]]/g, '');
+        if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+
+        XLSX.utils.book_append_sheet(wb, ws, sheetName);
+      });
+
+      XLSX.writeFile(wb, `Shift_Tracker_All_Periods_${getTodayKey()}.xlsx`);
+    }
+
+    function exportData() {
+      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs));
+      const anchor = document.createElement('a');
+      anchor.setAttribute("href", dataStr);
+      anchor.setAttribute("download", `shift_backup_${getTodayKey()}.json`);
+      document.body.appendChild(anchor);
+      anchor.click();
+      anchor.remove();
+    }
+
+    function importData(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        try {
+          logs = JSON.parse(e.target.result);
+          saveLogs();
+          alert("Backup successfully restored!");
+        } catch(err) {
+          alert("Invalid backup file.");
+        }
+      };
+      reader.readAsText(file);
+    }
+  </script>
+</body>
+</html>
