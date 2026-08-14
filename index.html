@@ -345,9 +345,9 @@
 
     </div>
 
-    <!-- ==================== ANCHORED BOTTOM DATA CONTROLS ==================== -->
-    <footer class="mt-6 pt-3 border-t border-slate-300/70 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
-      <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 text-center">
+    <!-- ==================== ANCHORED BOTTOM DATA CONTROLS & WATERMARK ==================== -->
+    <footer class="mt-6 pt-3 border-t border-slate-300/70 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-2xl shadow-sm space-y-3">
+      <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 text-center">
         Data Controls & Backups
       </p>
 
@@ -370,6 +370,13 @@
           <span class="text-[11px]">Import JSON</span>
           <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
         </label>
+      </div>
+
+      <!-- DESIGNER WATERMARK -->
+      <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-center select-none">
+        <p class="text-[11px] font-extrabold tracking-widest uppercase bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 dark:from-indigo-400 dark:via-purple-400 dark:to-indigo-300 bg-clip-text text-transparent opacity-85 hover:opacity-100 transition-opacity">
+          Designed by Youssef Mahmoud
+        </p>
       </div>
     </footer>
 
