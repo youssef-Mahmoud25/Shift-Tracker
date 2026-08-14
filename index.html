@@ -151,188 +151,232 @@
   </script>
 
   <style>
-    body { -webkit-tap-highlight-color: transparent; }
+    :root {
+      --sat: env(safe-area-inset-top, 0px);
+      --sab: env(safe-area-inset-bottom, 0px);
+      --sal: env(safe-area-inset-left, 0px);
+      --sar: env(safe-area-inset-right, 0px);
+    }
+
+    body { 
+      -webkit-tap-highlight-color: transparent; 
+      min-height: 100vh;
+      min-height: 100dvh;
+      padding-top: max(1rem, var(--sat));
+      padding-bottom: max(1.25rem, var(--sab));
+      padding-left: max(0.75rem, var(--sal));
+      padding-right: max(0.75rem, var(--sar));
+    }
+    
+    .modal-container {
+      padding-top: max(1rem, var(--sat));
+      padding-bottom: max(1rem, var(--sab));
+    }
+
     /* Utility to hide horizontal scrollbar cleanly */
     .scrollbar-none::-webkit-scrollbar { display: none; }
     .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="bg-gradient-to-br from-slate-200/80 via-slate-100 to-indigo-100/50 dark:from-slate-950 dark:via-indigo-950/40 dark:to-slate-900 text-slate-800 dark:text-slate-100 font-sans min-h-screen pb-12 transition-colors duration-300">
+<body class="bg-gradient-to-br from-slate-200/80 via-slate-100 to-indigo-100/50 dark:from-slate-950 dark:via-indigo-950/40 dark:to-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
-  <div class="max-w-md mx-auto p-4 pt-6">
-    <!-- Header with Gradient Fill, Title & Subtitle -->
-    <header class="flex justify-between items-center mb-4 bg-gradient-to-r from-slate-100/95 via-indigo-50/80 to-slate-200/80 dark:from-slate-800/90 dark:via-slate-800/70 dark:to-indigo-950/50 backdrop-blur-md p-4 rounded-2xl shadow-md border border-slate-300/50 dark:border-slate-700/60 transition-all">
-      <div class="flex items-center gap-3">
-        
-        <!-- Layered Badge -->
-        <div class="relative flex items-center justify-center w-12 h-12 bg-transparent select-none shrink-0">
-          <svg class="absolute w-10 h-10 drop-shadow-sm z-0 opacity-40" viewBox="0 0 100 100">
-            <circle cx="50" cy="50" r="46" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
-            <circle cx="50" cy="50" r="40" fill="#0f172a"/>
-            <line x1="50" y1="14" x2="50" y2="20" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-            <line x1="86" y1="50" x2="80" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-            <line x1="50" y1="86" x2="50" y2="80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-            <line x1="14" y1="50" x2="20" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="32" y2="28" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-            <line x1="50" y1="50" x2="70" y2="30" stroke="#818cf8" stroke-width="4" stroke-linecap="round"/>
-            <line x1="50" y1="56" x2="50" y2="18" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
-            <circle cx="50" cy="50" r="4" fill="#ef4444"/>
-          </svg>
-
-          <!-- FRONT LAYER: Gradient Letters "YM" -->
-          <span class="font-black text-2xl tracking-tighter bg-gradient-to-br from-indigo-950 via-indigo-900 to-purple-900 dark:from-indigo-300 dark:via-purple-200 dark:to-indigo-100 bg-clip-text text-transparent z-10 select-none">YM</span>
-        </div>
-
-        <div class="flex flex-col">
-          <h1 class="text-base font-extrabold bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 dark:from-slate-100 dark:via-indigo-200 dark:to-slate-200 bg-clip-text text-transparent leading-tight">Youssef's Shift Tracker</h1>
-          <p id="welcome-message" onclick="openNameModal()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline tracking-wide transition-all mt-0.5">
-            Welcome, Guest 👋
-          </p>
-        </div>
-      </div>
-      
-      <div class="flex items-center gap-2">
-        <button id="theme-toggle-btn" onclick="toggleTheme()" class="p-2 rounded-xl bg-gradient-to-r from-slate-200 to-slate-300/80 dark:from-slate-700 dark:to-slate-800 hover:scale-105 transition-all text-sm shadow-sm border border-slate-300/60 dark:border-slate-600/60">
-          🌙
-        </button>
-        <span class="text-xl">😉</span>
-      </div>
-    </header>
-
-    <!-- TOP MAIN NAVIGATION TABS -->
-    <nav class="grid grid-cols-2 gap-2 mb-4 bg-gradient-to-r from-slate-300/60 via-slate-200/70 to-slate-300/60 dark:from-slate-800/90 dark:via-slate-800/60 dark:to-slate-800/90 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/50 shadow-inner">
-      <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20">
-        🏠 Home
-      </button>
-      <button id="nav-btn-weeks" onclick="switchView('weeks')" class="py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40">
-        📅 Weekly Logs
-      </button>
-    </nav>
-
-    <!-- ==================== 1. HOME VIEW ==================== -->
-    <div id="view-home" class="space-y-4">
-      
-      <!-- PUNCH & TODAY CARD WITH COOL SLATE GRADIENT BACKGROUND -->
-      <div class="bg-gradient-to-br from-slate-100/90 via-indigo-100/40 to-slate-200/60 dark:from-slate-800 dark:via-slate-800/90 dark:to-indigo-950/40 p-5 rounded-2xl shadow-md border border-indigo-200/60 dark:border-indigo-900/40 transition-colors">
-        <div class="text-center mb-3">
-          <p id="current-date-display" class="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-1"></p>
-          <div id="punch-status" class="text-lg font-bold text-slate-700 dark:text-slate-200">Not Punched In</div>
+  <div class="max-w-lg mx-auto flex flex-col justify-between min-h-[calc(100dvh-2.5rem)]">
+    
+    <!-- TOP / MAIN SECTION CONTENT -->
+    <div class="space-y-4">
+      <!-- Header with Gradient Fill, Title & Subtitle -->
+      <header class="flex justify-between items-center bg-gradient-to-r from-slate-100/95 via-indigo-50/80 to-slate-200/80 dark:from-slate-800/90 dark:via-slate-800/70 dark:to-indigo-950/50 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-md border border-slate-300/50 dark:border-slate-700/60 transition-all">
+        <div class="flex items-center gap-3">
           
-          <!-- Live Shift Duration Timer -->
-          <div id="live-timer-container" class="hidden mt-1">
-            <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Shift Elapsed:</span>
-            <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider">00:00:00</div>
+          <!-- Layered Badge -->
+          <div class="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 bg-transparent select-none shrink-0">
+            <svg class="absolute w-9 h-9 sm:w-10 sm:h-10 drop-shadow-sm z-0 opacity-40" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
+              <circle cx="50" cy="50" r="40" fill="#0f172a"/>
+              <line x1="50" y1="14" x2="50" y2="20" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <line x1="86" y1="50" x2="80" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="86" x2="50" y2="80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <line x1="14" y1="50" x2="20" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
+              <line x1="50" y1="50" x2="32" y2="28" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
+              <line x1="50" y1="50" x2="70" y2="30" stroke="#818cf8" stroke-width="4" stroke-linecap="round"/>
+              <line x1="50" y1="56" x2="50" y2="18" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="50" cy="50" r="4" fill="#ef4444"/>
+            </svg>
+
+            <!-- FRONT LAYER: Gradient Letters "YM" -->
+            <span class="font-black text-xl sm:text-2xl tracking-tighter bg-gradient-to-br from-indigo-950 via-indigo-900 to-purple-900 dark:from-indigo-300 dark:via-purple-200 dark:to-indigo-100 bg-clip-text text-transparent z-10 select-none">YM</span>
+          </div>
+
+          <div class="flex flex-col">
+            <h1 class="text-sm sm:text-base font-extrabold bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 dark:from-slate-100 dark:via-indigo-200 dark:to-slate-200 bg-clip-text text-transparent leading-tight">Youssef's Shift Tracker</h1>
+            <p id="welcome-message" onclick="openNameModal()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline tracking-wide transition-all mt-0.5">
+              Welcome, Guest 👋
+            </p>
           </div>
         </div>
         
-        <!-- Punch Action Buttons -->
-        <div id="button-row" class="mb-2">
-          <!-- Punch In Button -->
-          <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:from-emerald-700 active:to-teal-800 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm transform active:scale-[0.99]">
-            Punch In
+        <div class="flex items-center gap-2">
+          <button id="theme-toggle-btn" onclick="toggleTheme()" class="p-2 rounded-xl bg-gradient-to-r from-slate-200 to-slate-300/80 dark:from-slate-700 dark:to-slate-800 hover:scale-105 transition-all text-sm shadow-sm border border-slate-300/60 dark:border-slate-600/60">
+            🌙
           </button>
-          
-          <!-- Punch Out Button -->
-          <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-700 active:from-rose-700 active:to-red-800 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-rose-500/20 transition-all text-sm hidden transform active:scale-[0.99]">
-            Punch Out
-          </button>
-
-          <!-- Reset Button -->
-          <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-300/80 dark:border-slate-600 transition-all text-xs hidden shadow-sm">
-            🔄 Reset Today
-          </button>
+          <span class="text-xl">😉</span>
         </div>
+      </header>
 
-        <!-- Text Under Button & Edit Trigger -->
-        <div id="punched-info-container" class="flex justify-center items-center gap-2 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
-          <span id="punched-info-text"></span>
-          <button onclick="openTodayEditModal()" class="bg-slate-200/90 dark:bg-slate-700/80 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 font-bold text-xs transition-all flex items-center gap-1 shadow-sm">
-            ✏️ Edit
-          </button>
-        </div>
-      </div>
+      <!-- TOP MAIN NAVIGATION TABS -->
+      <nav class="grid grid-cols-2 gap-2 bg-gradient-to-r from-slate-300/60 via-slate-200/70 to-slate-300/60 dark:from-slate-800/90 dark:via-slate-800/60 dark:to-slate-800/90 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/50 shadow-inner">
+        <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20">
+          🏠 Home
+        </button>
+        <button id="nav-btn-weeks" onclick="switchView('weeks')" class="py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40">
+          📅 Weekly Logs
+        </button>
+      </nav>
 
-      <!-- PAY PERIOD SWIPEABLE SLIDER CARD -->
-      <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/30 p-4 rounded-2xl shadow-sm border border-slate-300/60 dark:border-slate-700/60 transition-colors">
-        <div class="flex justify-between items-center mb-2.5 px-1">
-          <label onclick="selectCurrentPayPeriod()" class="block text-xs font-bold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider cursor-pointer hover:underline transition-all" title="Click to jump to current pay period">
-            Pay Period (16th - 15th) 📍
-          </label>
-          <span class="text-[10px] text-slate-500 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
-        </div>
+      <!-- ==================== 1. HOME VIEW ==================== -->
+      <div id="view-home" class="space-y-4">
         
-        <!-- Horizontal Scroll Container -->
-        <div id="pay-period-slider" class="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
-          <!-- Dynamic Period Chips Rendered Here -->
+        <!-- PUNCH & TODAY CARD WITH COOL SLATE GRADIENT BACKGROUND -->
+        <div class="bg-gradient-to-br from-slate-100/90 via-indigo-100/40 to-slate-200/60 dark:from-slate-800 dark:via-slate-800/90 dark:to-indigo-950/40 p-4 sm:p-5 rounded-2xl shadow-md border border-indigo-200/60 dark:border-indigo-900/40 transition-colors">
+          <div class="text-center mb-3">
+            <p id="current-date-display" class="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-1"></p>
+            <div id="punch-status" class="text-lg font-bold text-slate-700 dark:text-slate-200">Not Punched In</div>
+            
+            <!-- Live Shift Duration Timer -->
+            <div id="live-timer-container" class="hidden mt-1">
+              <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Shift Elapsed:</span>
+              <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider">00:00:00</div>
+            </div>
+          </div>
+          
+          <!-- Punch Action Buttons -->
+          <div id="button-row" class="mb-2">
+            <!-- Punch In Button -->
+            <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:from-emerald-700 active:to-teal-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm transform active:scale-[0.99]">
+              Punch In
+            </button>
+            
+            <!-- Punch Out Button -->
+            <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-700 active:from-rose-700 active:to-red-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-rose-500/20 transition-all text-sm hidden transform active:scale-[0.99]">
+              Punch Out
+            </button>
+
+            <!-- Reset Button -->
+            <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-300/80 dark:border-slate-600 transition-all text-xs hidden shadow-sm">
+              🔄 Reset Today
+            </button>
+          </div>
+
+          <!-- Text Under Button & Edit Trigger -->
+          <div id="punched-info-container" class="flex justify-center items-center gap-2 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
+            <span id="punched-info-text"></span>
+            <button onclick="openTodayEditModal()" class="bg-slate-200/90 dark:bg-slate-700/80 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 font-bold text-xs transition-all flex items-center gap-1 shadow-sm">
+              ✏️ Edit
+            </button>
+          </div>
         </div>
+
+        <!-- PAY PERIOD SWIPEABLE SLIDER CARD -->
+        <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/30 p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-300/60 dark:border-slate-700/60 transition-colors">
+          <div class="flex justify-between items-center mb-2.5 px-1">
+            <button type="button" onclick="selectCurrentPayPeriod()" class="text-xs sm:text-sm font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider select-none bg-transparent border-0 p-0 m-0 outline-none focus:outline-none active:outline-none">
+              Pay Period (16th - 15th)
+            </button>
+            <span class="text-[10px] text-slate-500 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
+          </div>
+          
+          <!-- Horizontal Scroll Container -->
+          <div id="pay-period-slider" class="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
+            <!-- Dynamic Period Chips Rendered Here -->
+          </div>
+        </div>
+
+        <!-- 4 MAIN PERIOD TOTALS CARDS (2x2 Grid with Larger Text & Layout) -->
+        <div class="grid grid-cols-2 gap-3">
+          <!-- Spent Card -->
+          <div id="card-spent" onclick="selectSummaryCard('spent')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+            <p id="card-spent-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Spent</p>
+            <p id="period-spent" class="text-xl font-black mt-1 transition-colors">00:00</p>
+          </div>
+
+          <!-- Needed Card -->
+          <div id="card-needed" onclick="selectSummaryCard('needed')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+            <p id="card-needed-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Needed</p>
+            <p id="period-needed" class="text-xl font-black mt-1 transition-colors">00:00</p>
+          </div>
+
+          <!-- Total Balance Card (Positioned Under Spent) -->
+          <div id="card-total" onclick="selectSummaryCard('total')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+            <p id="card-total-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Total Balance</p>
+            <p id="period-balance" class="text-xl font-black mt-1 transition-colors">00:00</p>
+          </div>
+
+          <!-- Punched Balance Card (Positioned Under Needed) -->
+          <div id="card-punched" onclick="selectSummaryCard('punched')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
+            <p id="card-punched-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Punched Balance</p>
+            <p id="punched-balance" class="text-xl font-black mt-1 transition-colors">00:00</p>
+          </div>
+        </div>
+
       </div>
 
-      <!-- 4 MAIN PERIOD TOTALS CARDS (Interactive Gradient Selection) -->
-      <div class="grid grid-cols-4 gap-2">
-        <!-- Spent Card -->
-        <div id="card-spent" onclick="selectSummaryCard('spent')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
-          <p id="card-spent-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Spent</p>
-          <p id="period-spent" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
+      <!-- ==================== 2. WEEKLY LOGS VIEW ==================== -->
+      <div id="view-weeks" class="hidden space-y-4">
+        
+        <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/40 p-4 rounded-2xl shadow-md border border-slate-300/60 dark:border-slate-700/60 transition-colors">
+          <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2 mb-3 border-b border-slate-300/60 dark:border-slate-700">
+            <!-- Dynamic Tabs -->
+          </div>
+
+          <!-- Weekly Totals Header Card -->
+          <div id="weekly-summary-card" class="bg-gradient-to-r from-slate-200/80 via-indigo-100/50 to-slate-200/80 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-indigo-200/60 dark:border-slate-700 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
+            <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-indigo-700 dark:text-indigo-400">00:00</strong></div>
+            <div><span class="text-slate-500 dark:text-slate-400 font-medium">Needed:</span> <strong id="week-needed" class="text-slate-800 dark:text-slate-200">00:00</strong></div>
+            <div><span class="text-slate-500 dark:text-slate-400 font-medium">Balance:</span> <strong id="week-balance" class="text-slate-700 dark:text-slate-300">00:00</strong></div>
+          </div>
+
+          <!-- Daily Logs List -->
+          <div id="logs-container" class="space-y-2">
+            <!-- Day items rendered here -->
+          </div>
         </div>
 
-        <!-- Needed Card -->
-        <div id="card-needed" onclick="selectSummaryCard('needed')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
-          <p id="card-needed-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Needed</p>
-          <p id="period-needed" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
-        </div>
-
-        <!-- Total Bal Card -->
-        <div id="card-total" onclick="selectSummaryCard('total')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
-          <p id="card-total-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Total Bal</p>
-          <p id="period-balance" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
-        </div>
-
-        <!-- Punched Bal Card -->
-        <div id="card-punched" onclick="selectSummaryCard('punched')" class="p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
-          <p id="card-punched-title" class="text-[9px] font-bold uppercase tracking-tight transition-colors">Punched Bal</p>
-          <p id="punched-balance" class="text-sm font-extrabold mt-1 transition-colors">00:00</p>
-        </div>
       </div>
 
-      <!-- Backup & Multi-Sheet Excel Export Actions -->
-      <div class="flex justify-between items-center text-xs text-slate-500 dark:text-slate-400 px-1 pt-2">
-        <button onclick="exportAllPeriodsToExcel()" class="hover:text-indigo-600 dark:hover:text-indigo-400 font-semibold underline transition flex items-center gap-1">📊 Export Excel (.xlsx)</button>
-        <button onclick="exportData()" class="hover:text-indigo-600 dark:hover:text-indigo-400 underline transition">Backup JSON</button>
-        <label class="hover:text-indigo-600 dark:hover:text-indigo-400 underline cursor-pointer transition">
-          Import
+    </div>
+
+    <!-- ==================== ANCHORED BOTTOM DATA CONTROLS ==================== -->
+    <footer class="mt-6 pt-3 border-t border-slate-300/70 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-2xl shadow-sm">
+      <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 mb-2 text-center">
+        Data Controls & Backups
+      </p>
+
+      <div class="grid grid-cols-3 gap-2 text-xs">
+        <!-- 1. Excel Export Button -->
+        <button onclick="exportAllPeriodsToExcel()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
+          <span class="text-base mb-0.5">📊</span>
+          <span class="text-[11px]">Excel Export</span>
+        </button>
+
+        <!-- 2. JSON Backup Export Button -->
+        <button onclick="exportData()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
+          <span class="text-base mb-0.5">📤</span>
+          <span class="text-[11px]">Backup JSON</span>
+        </button>
+
+        <!-- 3. JSON Import Button -->
+        <label class="flex flex-col items-center justify-center p-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-sm active:scale-95 cursor-pointer text-center">
+          <span class="text-base mb-0.5">📥</span>
+          <span class="text-[11px]">Import JSON</span>
           <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
         </label>
       </div>
-
-    </div>
-
-    <!-- ==================== 2. WEEKLY LOGS VIEW ==================== -->
-    <div id="view-weeks" class="hidden space-y-4">
-      
-      <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/40 p-4 rounded-2xl shadow-md border border-slate-300/60 dark:border-slate-700/60 transition-colors">
-        <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2 mb-3 border-b border-slate-300/60 dark:border-slate-700">
-          <!-- Dynamic Tabs -->
-        </div>
-
-        <!-- Weekly Totals Header Card -->
-        <div id="weekly-summary-card" class="bg-gradient-to-r from-slate-200/80 via-indigo-100/50 to-slate-200/80 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-indigo-200/60 dark:border-slate-700 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
-          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-indigo-700 dark:text-indigo-400">00:00</strong></div>
-          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Needed:</span> <strong id="week-needed" class="text-slate-800 dark:text-slate-200">00:00</strong></div>
-          <div><span class="text-slate-500 dark:text-slate-400 font-medium">Balance:</span> <strong id="week-balance" class="text-slate-700 dark:text-slate-300">00:00</strong></div>
-        </div>
-
-        <!-- Daily Logs List -->
-        <div id="logs-container" class="space-y-2">
-          <!-- Day items rendered here -->
-        </div>
-      </div>
-
-    </div>
+    </footer>
 
   </div>
 
   <!-- FIRST-TIME USER NAME MODAL -->
-  <div id="name-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="name-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
     <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="text-center mb-4">
         <span class="text-3xl mb-2 block">👋</span>
@@ -351,7 +395,7 @@
   </div>
 
   <!-- Pop-Up Screen Edit Modal with Gradient Styling -->
-  <div id="edit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50">
+  <div id="edit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
     <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="flex justify-between items-center mb-4">
         <h3 class="font-extrabold text-lg bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent" id="modal-title">Edit Entry</h3>
@@ -868,7 +912,6 @@
       const now = new Date();
       const checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
 
-      // Find the pay period that covers today's date
       const currentIdx = payPeriodsList.findIndex(period => {
         const start = new Date(period.start);
         const end = new Date(period.end);
@@ -900,23 +943,23 @@
 
         if (key === 'spent') {
           if (isActive) {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white border-2 border-indigo-300 dark:border-indigo-400 shadow-lg shadow-indigo-500/30 scale-[1.03] ring-2 ring-indigo-400/40 z-10 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-indigo-100";
-            valEl.className = "text-sm font-extrabold mt-1 text-white";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white border-2 border-indigo-300 dark:border-indigo-400 shadow-lg shadow-indigo-500/30 scale-[1.02] ring-2 ring-indigo-400/40 z-10 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-indigo-100";
+            valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-indigo-100/80 via-slate-100 to-indigo-100/40 dark:from-indigo-950/40 dark:via-slate-800 dark:to-slate-800/80 border border-indigo-200 dark:border-indigo-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-indigo-700 dark:text-indigo-400";
-            valEl.className = "text-sm font-extrabold mt-1 text-indigo-800 dark:text-indigo-400";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-indigo-100/80 via-slate-100 to-indigo-100/40 dark:from-indigo-950/40 dark:via-slate-800 dark:to-slate-800/80 border border-indigo-200 dark:border-indigo-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400";
+            valEl.className = "text-xl font-black mt-1 text-indigo-800 dark:text-indigo-400";
           }
         } else if (key === 'needed') {
           if (isActive) {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-slate-700 via-slate-800 to-indigo-900 text-white border-2 border-slate-400 dark:border-slate-300 shadow-lg shadow-slate-500/30 scale-[1.03] ring-2 ring-slate-400/40 z-10 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-slate-300";
-            valEl.className = "text-sm font-extrabold mt-1 text-white";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-slate-700 via-slate-800 to-indigo-900 text-white border-2 border-slate-400 dark:border-slate-300 shadow-lg shadow-slate-500/30 scale-[1.02] ring-2 ring-slate-400/40 z-10 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-slate-300";
+            valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-slate-200/80 via-slate-100 to-slate-200/40 dark:from-slate-700/30 dark:via-slate-800 dark:to-slate-800/80 border border-slate-300/80 dark:border-slate-700/60 opacity-80 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-slate-600 dark:text-slate-400";
-            valEl.className = "text-sm font-extrabold mt-1 text-slate-800 dark:text-slate-200";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-slate-200/80 via-slate-100 to-slate-200/40 dark:from-slate-700/30 dark:via-slate-800 dark:to-slate-800/80 border border-slate-300/80 dark:border-slate-700/60 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400";
+            valEl.className = "text-xl font-black mt-1 text-slate-800 dark:text-slate-200";
           }
         } else if (key === 'total') {
           const isPos = periodBalance >= 0;
@@ -924,13 +967,13 @@
             const activeGradient = isPos 
               ? "bg-gradient-to-br from-emerald-500 via-teal-600 to-indigo-600 border-2 border-emerald-300 dark:border-emerald-400 shadow-lg shadow-teal-500/30 ring-2 ring-emerald-400/40"
               : "bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
-            cardEl.className = `p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.03] z-10 select-none`;
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-white/90";
-            valEl.className = "text-sm font-extrabold mt-1 text-white";
+            cardEl.className = `p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.02] z-10 select-none`;
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-white/90";
+            valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-sky-100/80 via-slate-100 to-sky-100/40 dark:from-sky-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-sky-200 dark:border-sky-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-sky-700 dark:text-sky-400";
-            valEl.className = `text-sm font-extrabold mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-sky-100/80 via-slate-100 to-sky-100/40 dark:from-sky-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-sky-200 dark:border-sky-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400";
+            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
           }
         } else if (key === 'punched') {
           const isPos = punchedBalance >= 0;
@@ -938,13 +981,13 @@
             const activeGradient = isPos 
               ? "bg-gradient-to-br from-purple-600 via-indigo-600 to-teal-600 border-2 border-purple-300 dark:border-purple-400 shadow-lg shadow-purple-500/30 ring-2 ring-purple-400/40"
               : "bg-gradient-to-br from-rose-600 via-purple-600 to-indigo-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
-            cardEl.className = `p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.03] z-10 select-none`;
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-white/90";
-            valEl.className = "text-sm font-extrabold mt-1 text-white";
+            cardEl.className = `p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.02] z-10 select-none`;
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-white/90";
+            valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-2.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-purple-100/80 via-slate-100 to-indigo-100/40 dark:from-purple-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-purple-200 dark:border-purple-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-[9px] font-bold uppercase tracking-tight text-purple-700 dark:text-purple-400";
-            valEl.className = `text-sm font-extrabold mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-purple-100/80 via-slate-100 to-indigo-100/40 dark:from-purple-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-purple-200 dark:border-purple-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400";
+            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
           }
         }
       });
@@ -1084,9 +1127,9 @@
         const isHoliday = item.log.isHoliday;
         
         let tag = '';
-        if (isHoliday) tag = '<span class="text-[10px] bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">Holiday 🎉</span>';
-        else if (isFriday) tag = '<span class="text-[10px] bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">Friday</span>';
-        else if (isSaturday) tag = '<span class="text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold px-2 py-0.5 rounded-full ml-1 shadow-sm">OT Saturday</span>';
+        if (isHoliday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Holiday 🎉</span>';
+        else if (isFriday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Friday</span>';
+        else if (isSaturday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">OT Saturday</span>';
 
         const day = String(item.date.getDate()).padStart(2, '0');
         const month = String(item.date.getMonth() + 1).padStart(2, '0');
@@ -1098,9 +1141,12 @@
         const balText = formatHoursToHHMM(item.balance, true);
         const balClass = item.balance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400';
 
+        const tagHtml = tag ? `<div class="mt-0.5">${tag}</div>` : '';
+
         div.innerHTML = `
           <div class="cursor-pointer flex-1" onclick="openEditModal('${item.dateKey}', '${item.log.in || ''}', '${item.log.out || ''}', ${!!isHoliday})">
-            <div class="font-bold text-slate-800 dark:text-slate-200">${dayNames[item.dayOfWeek]} ${dateFormatted} ${tag}</div>
+            <div class="font-bold text-slate-800 dark:text-slate-200">${dayNames[item.dayOfWeek]} ${dateFormatted}</div>
+            ${tagHtml}
             <div class="text-slate-500 dark:text-slate-400 mt-0.5">${timeDisplay}</div>
           </div>
           
@@ -1297,7 +1343,6 @@
         const sheetData = buildPeriodSheetData(period.start, period.end);
         const ws = XLSX.utils.aoa_to_sheet(sheetData);
         
-        // Clean Excel sheet name (Max 31 chars, no special prohibited chars)
         let sheetName = period.label.replace(/[\/\\\?\*\[\]]/g, '');
         if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
 
