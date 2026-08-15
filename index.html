@@ -44,14 +44,12 @@
       canvas.height = 512;
       const ctx = canvas.getContext('2d');
 
-      // Solid Background for Phone Home Screen Icon
       const bgGrad = ctx.createLinearGradient(0, 0, 512, 512);
       bgGrad.addColorStop(0, '#0f172a');
       bgGrad.addColorStop(1, '#1e1b4b');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 512, 512);
 
-      // Outer Clock Circle Badge
       const cx = 256, cy = 256, r = 200;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, 2 * Math.PI);
@@ -61,7 +59,6 @@
       ctx.strokeStyle = '#64748b';
       ctx.stroke();
 
-      // Clock Hour Ticks
       for (let i = 0; i < 12; i++) {
         const angle = (i * 30) * Math.PI / 180;
         const x1 = cx + Math.sin(angle) * (r - 35);
@@ -76,7 +73,6 @@
         ctx.stroke();
       }
 
-      // Hour Hand
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(-60 * Math.PI / 180);
@@ -89,7 +85,6 @@
       ctx.stroke();
       ctx.restore();
 
-      // Minute Hand
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(60 * Math.PI / 180);
@@ -102,13 +97,11 @@
       ctx.stroke();
       ctx.restore();
 
-      // Center Pin
       ctx.beginPath();
       ctx.arc(cx, cy, 12, 0, 2 * Math.PI);
       ctx.fillStyle = '#ef4444';
       ctx.fill();
 
-      // Foreground Text "YM"
       ctx.font = '900 200px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
@@ -126,20 +119,17 @@
 
       const iconUrl = canvas.toDataURL('image/png');
 
-      // Set iOS Apple Touch Icon
       const appleIcon = document.createElement('link');
       appleIcon.rel = 'apple-touch-icon';
       appleIcon.href = iconUrl;
       document.head.appendChild(appleIcon);
 
-      // Set Favicon
       const favicon = document.createElement('link');
       favicon.rel = 'icon';
       favicon.type = 'image/png';
       favicon.href = iconUrl;
       document.head.appendChild(favicon);
 
-      // Inject Web App Manifest dynamically for Android & Home Screen Additions
       const manifestObj = {
         name: "Youssef's Shift Tracker",
         short_name: "Youssef's Shift Tracker",
@@ -187,7 +177,6 @@
       padding-bottom: max(1rem, var(--sab));
     }
 
-    /* Utility to hide horizontal scrollbar cleanly */
     .scrollbar-none::-webkit-scrollbar { display: none; }
     .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
@@ -198,11 +187,8 @@
     
     <!-- TOP / MAIN SECTION CONTENT -->
     <div class="space-y-4">
-      <!-- Header with Gradient Fill, Title & Subtitle -->
       <header class="flex justify-between items-center bg-gradient-to-r from-slate-100/95 via-indigo-50/80 to-slate-200/80 dark:from-slate-800/90 dark:via-slate-800/70 dark:to-indigo-950/50 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-md border border-slate-300/50 dark:border-slate-700/60 transition-all">
         <div class="flex items-center gap-3">
-          
-          <!-- Layered Badge -->
           <div class="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 bg-transparent select-none shrink-0">
             <svg class="absolute w-9 h-9 sm:w-10 sm:h-10 drop-shadow-sm z-0 opacity-40" viewBox="0 0 100 100">
               <circle cx="50" cy="50" r="46" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
@@ -216,8 +202,6 @@
               <line x1="50" y1="56" x2="50" y2="18" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
               <circle cx="50" cy="50" r="4" fill="#ef4444"/>
             </svg>
-
-            <!-- FRONT LAYER: Gradient Letters "YM" -->
             <span class="font-black text-xl sm:text-2xl tracking-tighter bg-gradient-to-br from-indigo-950 via-indigo-900 to-purple-900 dark:from-indigo-300 dark:via-purple-200 dark:to-indigo-100 bg-clip-text text-transparent z-10 select-none">YM</span>
           </div>
 
@@ -237,7 +221,7 @@
         </div>
       </header>
 
-      <!-- TOP MAIN NAVIGATION TABS -->
+      <!-- NAVIGATION TABS -->
       <nav class="grid grid-cols-2 gap-2 bg-gradient-to-r from-slate-300/60 via-slate-200/70 to-slate-300/60 dark:from-slate-800/90 dark:via-slate-800/60 dark:to-slate-800/90 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/50 shadow-inner">
         <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20">
           🏠 Home
@@ -247,41 +231,33 @@
         </button>
       </nav>
 
-      <!-- ==================== 1. HOME VIEW ==================== -->
+      <!-- HOME VIEW -->
       <div id="view-home" class="space-y-4">
-        
-        <!-- PUNCH & TODAY CARD WITH COOL SLATE GRADIENT BACKGROUND -->
         <div class="bg-gradient-to-br from-slate-100/90 via-indigo-100/40 to-slate-200/60 dark:from-slate-800 dark:via-slate-800/90 dark:to-indigo-950/40 p-4 sm:p-5 rounded-2xl shadow-md border border-indigo-200/60 dark:border-indigo-900/40 transition-colors">
           <div class="text-center mb-3">
             <p id="current-date-display" class="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-1"></p>
             <div id="punch-status" class="text-lg font-bold text-slate-700 dark:text-slate-200">Not Punched In</div>
             
-            <!-- Live Shift Duration Timer -->
             <div id="live-timer-container" class="hidden mt-1">
               <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Shift Elapsed:</span>
               <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider">00:00:00</div>
             </div>
           </div>
           
-          <!-- Punch Action Buttons -->
           <div id="button-row" class="mb-2">
-            <!-- Punch In Button -->
             <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:from-emerald-700 active:to-teal-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm transform active:scale-[0.99]">
               Punch In
             </button>
             
-            <!-- Punch Out Button -->
             <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-700 active:from-rose-700 active:to-red-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-rose-500/20 transition-all text-sm hidden transform active:scale-[0.99]">
               Punch Out
             </button>
 
-            <!-- Reset Button -->
             <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-300/80 dark:border-slate-600 transition-all text-xs hidden shadow-sm">
               🔄 Reset Today
             </button>
           </div>
 
-          <!-- Text Under Button & Edit Trigger -->
           <div id="punched-info-container" class="flex flex-col items-center justify-center gap-1 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
             <div class="flex items-center gap-2">
               <span id="punched-info-text"></span>
@@ -289,12 +265,10 @@
                 ✏️ Edit
               </button>
             </div>
-            <!-- Alert text for 4-hour punch out restriction -->
             <p id="punch-out-restriction-text" class="text-xs font-bold text-amber-600 dark:text-amber-400 hidden mt-0.5 text-center"></p>
           </div>
         </div>
 
-        <!-- PAY PERIOD SWIPEABLE SLIDER CARD -->
         <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/30 p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-300/60 dark:border-slate-700/60 transition-colors">
           <div class="flex justify-between items-center mb-2.5 px-1">
             <button type="button" onclick="selectCurrentPayPeriod()" class="text-xs sm:text-sm font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider select-none bg-transparent border-0 p-0 m-0 outline-none focus:outline-none active:outline-none">
@@ -303,94 +277,74 @@
             <span class="text-[10px] text-slate-500 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
           </div>
           
-          <!-- Horizontal Scroll Container -->
           <div id="pay-period-slider" class="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
-            <!-- Dynamic Period Chips Rendered Here -->
           </div>
         </div>
 
-        <!-- 4 MAIN PERIOD TOTALS CARDS (2x2 Grid with Larger Text & Layout) -->
         <div class="grid grid-cols-2 gap-3">
-          <!-- Spent Card -->
           <div id="card-spent" onclick="selectSummaryCard('spent')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
             <p id="card-spent-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Spent</p>
             <p id="period-spent" class="text-xl font-black mt-1 transition-colors">00:00</p>
           </div>
 
-          <!-- Needed Card -->
           <div id="card-needed" onclick="selectSummaryCard('needed')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
             <p id="card-needed-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Needed</p>
             <p id="period-needed" class="text-xl font-black mt-1 transition-colors">00:00</p>
           </div>
 
-          <!-- Total Balance Card (Positioned Under Spent) -->
           <div id="card-total" onclick="selectSummaryCard('total')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
             <p id="card-total-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Total Balance</p>
             <p id="period-balance" class="text-xl font-black mt-1 transition-colors">00:00</p>
           </div>
 
-          <!-- Punched Balance Card (Positioned Under Needed) -->
           <div id="card-punched" onclick="selectSummaryCard('punched')" class="p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 select-none">
             <p id="card-punched-title" class="text-xs font-bold uppercase tracking-wider transition-colors">Punched Balance</p>
             <p id="punched-balance" class="text-xl font-black mt-1 transition-colors">00:00</p>
           </div>
         </div>
-
       </div>
 
-      <!-- ==================== 2. WEEKLY LOGS VIEW ==================== -->
+      <!-- WEEKLY LOGS VIEW -->
       <div id="view-weeks" class="hidden space-y-4">
-        
         <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/40 p-4 rounded-2xl shadow-md border border-slate-300/60 dark:border-slate-700/60 transition-colors">
           <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2 mb-3 border-b border-slate-300/60 dark:border-slate-700">
-            <!-- Dynamic Tabs -->
           </div>
 
-          <!-- Weekly Totals Header Card -->
           <div id="weekly-summary-card" class="bg-gradient-to-r from-slate-200/80 via-indigo-100/50 to-slate-200/80 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-indigo-200/60 dark:border-slate-700 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
             <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-indigo-700 dark:text-indigo-400">00:00</strong></div>
             <div><span class="text-slate-500 dark:text-slate-400 font-medium">Needed:</span> <strong id="week-needed" class="text-slate-800 dark:text-slate-200">00:00</strong></div>
             <div><span class="text-slate-500 dark:text-slate-400 font-medium">Balance:</span> <strong id="week-balance" class="text-slate-700 dark:text-slate-300">00:00</strong></div>
           </div>
 
-          <!-- Daily Logs List -->
           <div id="logs-container" class="space-y-2">
-            <!-- Day items rendered here -->
           </div>
         </div>
-
       </div>
-
     </div>
 
-    <!-- ==================== ANCHORED BOTTOM DATA CONTROLS & WATERMARK ==================== -->
+    <!-- ANCHORED BOTTOM DATA CONTROLS -->
     <footer class="mt-6 pt-3 border-t border-slate-300/70 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-2xl shadow-sm space-y-3">
       <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 text-center">
         Data Controls & Backups
       </p>
 
       <div class="grid grid-cols-3 gap-2 text-xs">
-        <!-- 1. Excel Export Button -->
         <button onclick="exportAllPeriodsToExcel()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📊</span>
           <span class="text-[11px]">Excel Export</span>
         </button>
 
-        <!-- 2. JSON Backup Export Button -->
         <button onclick="exportData()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📤</span>
           <span class="text-[11px]">Backup JSON</span>
         </button>
 
-        <!-- 3. JSON Import Button -->
-        <label class="flex flex-col items-center justify-center p-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-sm active:scale-95 cursor-pointer text-center">
+        <button onclick="openJsonTextImportModal()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📥</span>
-          <span class="text-[11px]">Import JSON</span>
-          <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
-        </label>
+          <span class="text-[11px]">Import File</span>
+        </button>
       </div>
 
-      <!-- DESIGNER WATERMARK -->
       <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-center select-none">
         <p class="text-[11px] font-extrabold tracking-widest uppercase bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 dark:from-indigo-400 dark:via-purple-400 dark:to-indigo-300 bg-clip-text text-transparent opacity-85 hover:opacity-100 transition-opacity">
           Designed by Youssef Mahmoud
@@ -400,7 +354,7 @@
 
   </div>
 
-  <!-- FIRST-TIME USER NAME MODAL -->
+  <!-- USER NAME MODAL -->
   <div id="name-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
     <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="text-center mb-4">
@@ -419,7 +373,7 @@
     </div>
   </div>
 
-  <!-- Pop-Up Screen Edit Modal with Gradient Styling -->
+  <!-- EDIT MODAL -->
   <div id="edit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
     <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="flex justify-between items-center mb-4">
@@ -429,7 +383,6 @@
       
       <input type="hidden" id="edit-date">
 
-      <!-- Holiday Option Box -->
       <div class="mb-4 bg-gradient-to-r from-purple-200/70 via-purple-100/60 to-indigo-200/70 dark:from-purple-950/60 dark:via-purple-900/40 dark:to-indigo-950/60 p-3 rounded-xl border border-purple-300/80 dark:border-purple-800/60 flex items-center justify-between shadow-sm">
         <label for="edit-holiday" class="text-xs font-bold text-purple-950 dark:text-purple-200 cursor-pointer flex items-center gap-1.5">
           <span>🎉 Mark as Holiday</span>
@@ -438,38 +391,22 @@
         <input type="checkbox" id="edit-holiday" onchange="toggleHolidayInput()" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
       </div>
       
-      <!-- Punch In Field -->
       <div class="mb-4" id="in-field-wrapper">
         <label class="text-xs text-slate-600 dark:text-slate-400 font-bold block mb-1">Punch In Time</label>
         <div class="grid grid-cols-3 gap-2">
           <select id="edit-in-hour" onchange="autoSetAMPM('in')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
           </select>
           <select id="edit-in-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
+            <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
           </select>
           <select id="edit-in-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="AM">AM</option>
-            <option value="PM">PM</option>
+            <option value="AM">AM</option><option value="PM">PM</option>
           </select>
         </div>
       </div>
       
-      <!-- Punch Out Field -->
       <div class="mb-5" id="out-field-wrapper">
         <div class="flex items-center justify-between mb-1">
           <label class="text-xs text-slate-600 dark:text-slate-400 font-bold">Punch Out Time</label>
@@ -481,28 +418,14 @@
 
         <div class="grid grid-cols-3 gap-2">
           <select id="edit-out-hour" onchange="autoSetAMPM('out')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="7">7</option>
-            <option value="8">8</option>
-            <option value="9">9</option>
-            <option value="10">10</option>
-            <option value="11">11</option>
-            <option value="12">12</option>
-            <option value="1">1</option>
-            <option value="2">2</option>
-            <option value="3">3</option>
-            <option value="4">4</option>
-            <option value="5">5</option>
-            <option value="6">6</option>
+            <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
+            <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
           </select>
           <select id="edit-out-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="00">00</option>
-            <option value="15">15</option>
-            <option value="30">30</option>
-            <option value="45">45</option>
+            <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
           </select>
           <select id="edit-out-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
-            <option value="AM">AM</option>
-            <option value="PM">PM</option>
+            <option value="AM">AM</option><option value="PM">PM</option>
           </select>
         </div>
       </div>
@@ -518,11 +441,48 @@
     </div>
   </div>
 
+  <!-- GUARANTEED MOBILE JSON TEXT BACKUP & IMPORT MODAL -->
+  <div id="json-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-5 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
+      <div class="flex justify-between items-center mb-3">
+        <h3 id="json-modal-title" class="font-extrabold text-base bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent">JSON Backup & Restore</h3>
+        <button onclick="closeJsonModal()" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 font-bold p-1">✕</button>
+      </div>
+      <p id="json-modal-desc" class="text-xs text-slate-600 dark:text-slate-400 mb-3">
+        Tap 'Download File', 'Copy JSON', or paste backup text below to restore.
+      </p>
+
+      <!-- Direct File Import Option Inside Modal -->
+      <div id="json-file-upload-container" class="hidden mb-3">
+        <label class="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs cursor-pointer transition-all">
+          <span>📁</span> Select .JSON Backup File
+          <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
+        </label>
+      </div>
+
+      <!-- Direct Download Link for strict WebViews/Safari Standalone -->
+      <a id="json-download-link" href="#" download="shift_backup.json" target="_blank" class="hidden mb-3 w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs transition-all">
+        💾 Tap Here to Download .JSON File
+      </a>
+
+      <textarea id="json-textarea" rows="7" class="w-full bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 p-3 rounded-xl font-mono text-[11px] text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-inner resize-none mb-3"></textarea>
+
+      <div class="flex gap-2">
+        <button id="json-copy-btn" onclick="copyJsonToClipboard()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
+          📋 Copy JSON
+        </button>
+        <button id="json-apply-btn" onclick="restoreJsonFromText()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
+          📥 Restore JSON
+        </button>
+      </div>
+    </div>
+  </div>
+
   <script>
     const DAILY_TARGET = 7;
     let logs = JSON.parse(localStorage.getItem('shift_logs') || '{}');
     let selectedWeek = 0;
-    let selectedCard = 'punched'; // Currently active summary card
+    let selectedCard = 'punched';
     let payPeriodsList = [];
     let selectedPeriodIndex = 0;
 
@@ -536,7 +496,6 @@
       setInterval(runLiveTimer, 1000);
     };
 
-    // User Name Logic
     function checkUserName() {
       const storedName = localStorage.getItem('user_name');
       if (!storedName) {
@@ -647,7 +606,6 @@
       return `${h}:${String(m).padStart(2, '0')} ${ampm}`;
     }
 
-    // HELPER: Add specified hours to 24-hour time string "HH:MM"
     function addHoursToTime(timeStr, hoursToAdd = 4) {
       if (!timeStr) return '';
       let [h, m] = timeStr.split(':').map(Number);
@@ -719,7 +677,6 @@
       const today = getTodayKey();
       if (!logs[today] || !logs[today].in) return;
 
-      // Minimum 4-hour rule check
       const currentWorked = calculateHours(logs[today].in, roundTime(getTimeNow()));
       if (currentWorked < 4) {
         const minOutTime = format12Hour(addHoursToTime(logs[today].in, 4));
@@ -823,7 +780,6 @@
         infoContainer.classList.remove('hidden');
         infoText.innerText = `You punched in at ${format12Hour(entry.in)}`;
         
-        // Calculate and render minimum punch-out time (+4 hours)
         const minOutTime = format12Hour(addHoursToTime(entry.in, 4));
         restrictionText.innerText = `You can't punch out before ${minOutTime}`;
         restrictionText.classList.remove('hidden');
@@ -894,7 +850,6 @@
       }
     }
 
-    // POPULATE & RENDER PAY PERIOD SLIDER CARDS
     function populatePayPeriods() {
       payPeriodsList = [];
       const now = new Date();
@@ -944,7 +899,6 @@
         container.appendChild(card);
       });
 
-      // Auto scroll selected card into view
       setTimeout(() => {
         const activeChip = document.getElementById(`period-chip-${selectedPeriodIndex}`);
         if (activeChip) {
@@ -1101,7 +1055,6 @@
           balance: dayBalance 
         });
 
-        // Split week on Friday (dayOfWeek === 5) so the next week starts on Saturday (dayOfWeek === 6)
         if (dayOfWeek === 5 || cur.getTime() === endDate.getTime()) {
           weeks.push(currentWeek);
           currentWeek = [];
@@ -1118,9 +1071,7 @@
       document.getElementById('period-balance').innerText = formatHoursToHHMM(periodBalance, periodBalance >= 0);
       document.getElementById('punched-balance').innerText = formatHoursToHHMM(punchedBalance, punchedBalance >= 0);
 
-      // Update active/inactive summary card dynamic styles
       updateSummaryCardStyles(periodBalance, punchedBalance);
-
       renderWeeklyTabs(weeks);
     }
 
@@ -1271,7 +1222,6 @@
       closeModal();
     }
 
-    // HELPER: BUILD DATA FOR A SINGLE PAY PERIOD SHEET
     function buildPeriodSheetData(startDate, endDate) {
       const dayNames = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
       let rows = [];
@@ -1340,7 +1290,6 @@
       return rows;
     }
 
-    // HELPER: GET ALL RELEVANT PAY PERIODS
     function getAllPayPeriods() {
       const dateKeys = Object.keys(logs);
       const dates = dateKeys.map(k => new Date(k)).filter(d => !isNaN(d.getTime()));
@@ -1380,53 +1329,211 @@
       return periods;
     }
 
-    // MULTI-SHEET EXPORT FUNCTION
     function exportAllPeriodsToExcel() {
-      if (typeof XLSX === 'undefined') {
-        alert("Excel export module is loading. Please try again in a moment.");
-        return;
+      if (typeof XLSX !== 'undefined') {
+        try {
+          const wb = XLSX.utils.book_new();
+          const periods = getAllPayPeriods();
+
+          periods.forEach(period => {
+            const sheetData = buildPeriodSheetData(period.start, period.end);
+            const ws = XLSX.utils.aoa_to_sheet(sheetData);
+            
+            let sheetName = period.label.replace(/[\/\\\?\*\[\]]/g, '');
+            if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
+
+            XLSX.utils.book_append_sheet(wb, ws, sheetName);
+          });
+
+          XLSX.writeFile(wb, `Shift_Tracker_All_Periods_${getTodayKey()}.xlsx`);
+          return;
+        } catch(e) {
+          console.warn("XLSX export failed, falling back to CSV export", e);
+        }
       }
 
-      const wb = XLSX.utils.book_new();
-      const periods = getAllPayPeriods();
-
-      periods.forEach(period => {
-        const sheetData = buildPeriodSheetData(period.start, period.end);
-        const ws = XLSX.utils.aoa_to_sheet(sheetData);
-        
-        let sheetName = period.label.replace(/[\/\\\?\*\[\]]/g, '');
-        if (sheetName.length > 31) sheetName = sheetName.substring(0, 31);
-
-        XLSX.utils.book_append_sheet(wb, ws, sheetName);
-      });
-
-      XLSX.writeFile(wb, `Shift_Tracker_All_Periods_${getTodayKey()}.xlsx`);
+      exportToCSV();
     }
 
-    function exportData() {
-      const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(logs));
-      const anchor = document.createElement('a');
-      anchor.setAttribute("href", dataStr);
-      anchor.setAttribute("download", `shift_backup_${getTodayKey()}.json`);
-      document.body.appendChild(anchor);
-      anchor.click();
-      anchor.remove();
+    function exportToCSV() {
+      const periods = getAllPayPeriods();
+      let csvLines = [];
+      
+      periods.forEach(period => {
+        csvLines.push(`"--- PAY PERIOD: ${period.label} ---"`);
+        const sheetData = buildPeriodSheetData(period.start, period.end);
+        sheetData.forEach(row => {
+          const formattedRow = row.map(cell => `"${String(cell).replace(/"/g, '""')}"`).join(",");
+          csvLines.push(formattedRow);
+        });
+        csvLines.push("");
+      });
+
+      const csvString = csvLines.join("\n");
+      const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement("a");
+      link.setAttribute("href", url);
+      link.setAttribute("download", `Shift_Tracker_Export_${getTodayKey()}.csv`);
+      document.body.appendChild(link);
+      link.click();
+      setTimeout(() => {
+        document.body.removeChild(link);
+        URL.revokeObjectURL(url);
+      }, 500);
+    }
+
+    async function exportData() {
+      const jsonStr = JSON.stringify(logs, null, 2);
+      const fileName = `shift_backup_${getTodayKey()}.json`;
+
+      if (navigator.share && navigator.canShare) {
+        try {
+          const blob = new Blob([jsonStr], { type: 'application/json' });
+          const file = new File([blob], fileName, { type: 'application/json' });
+          if (navigator.canShare({ files: [file] })) {
+            await navigator.share({
+              title: "Shift Tracker Backup",
+              text: "Shift Tracker JSON Backup File",
+              files: [file]
+            });
+            return;
+          }
+        } catch (err) {
+          if (err.name === 'AbortError') return;
+          console.warn("Web Share API failed, using fallbacks:", err);
+        }
+      }
+
+      try {
+        const blob = new Blob([jsonStr], { type: 'application/json' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        a.style.display = 'none';
+        document.body.appendChild(a);
+        a.click();
+        setTimeout(() => {
+          document.body.removeChild(a);
+          URL.revokeObjectURL(url);
+        }, 1000);
+      } catch (err) {
+        console.warn("Programmatic download failed:", err);
+      }
+
+      openJsonTextModal(jsonStr, 'backup');
     }
 
     function importData(event) {
       const file = event.target.files[0];
       if (!file) return;
+
       const reader = new FileReader();
       reader.onload = (e) => {
         try {
-          logs = JSON.parse(e.target.result);
-          saveLogs();
-          alert("Backup successfully restored!");
+          const importedLogs = JSON.parse(e.target.result);
+          if (typeof importedLogs === 'object' && importedLogs !== null) {
+            logs = importedLogs;
+            saveLogs();
+            closeJsonModal();
+            alert("Backup successfully restored!");
+          } else {
+            throw new Error("Invalid format");
+          }
         } catch(err) {
-          alert("Invalid backup file.");
+          alert("Invalid JSON backup file format.");
         }
       };
       reader.readAsText(file);
+      event.target.value = '';
+    }
+
+    function openJsonTextModal(jsonText = '', mode = 'backup') {
+      const textarea = document.getElementById('json-textarea');
+      const title = document.getElementById('json-modal-title');
+      const desc = document.getElementById('json-modal-desc');
+      const downloadBtn = document.getElementById('json-download-link');
+      const fileContainer = document.getElementById('json-file-upload-container');
+      const copyBtn = document.getElementById('json-copy-btn');
+
+      if (mode === 'backup') {
+        title.innerText = "Export / Backup JSON";
+        desc.innerText = "Tap 'Download File', 'Copy JSON', or save the code below to your Notes.";
+        const exportContent = jsonText || JSON.stringify(logs, null, 2);
+        textarea.value = exportContent;
+
+        const blob = new Blob([exportContent], { type: 'application/json' });
+        downloadBtn.href = URL.createObjectURL(blob);
+        downloadBtn.download = `shift_backup_${getTodayKey()}.json`;
+        downloadBtn.classList.remove('hidden');
+
+        if (fileContainer) fileContainer.classList.add('hidden');
+        if (copyBtn) copyBtn.classList.remove('hidden');
+      } else {
+        title.innerText = "Import & Restore Data";
+        desc.innerText = "Select a .json file or paste clipboard backup text below to restore.";
+        textarea.value = '';
+        textarea.placeholder = "Paste JSON backup text here...";
+        downloadBtn.classList.add('hidden');
+
+        if (fileContainer) fileContainer.classList.remove('hidden');
+        if (copyBtn) copyBtn.classList.add('hidden');
+      }
+
+      document.getElementById('json-modal').classList.remove('hidden');
+    }
+
+    function openJsonTextImportModal() {
+      openJsonTextModal('', 'import');
+    }
+
+    function closeJsonModal() {
+      document.getElementById('json-modal').classList.add('hidden');
+    }
+
+    function copyJsonToClipboard() {
+      const textarea = document.getElementById('json-textarea');
+      if (!textarea.value.trim()) {
+        textarea.value = JSON.stringify(logs, null, 2);
+      }
+      textarea.select();
+      textarea.setSelectionRange(0, 99999);
+      
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textarea.value)
+          .then(() => alert("JSON copied to clipboard!"))
+          .catch(() => {
+            document.execCommand('copy');
+            alert("JSON copied to clipboard!");
+          });
+      } else {
+        document.execCommand('copy');
+        alert("JSON copied to clipboard!");
+      }
+    }
+
+    function restoreJsonFromText() {
+      const textarea = document.getElementById('json-textarea');
+      const text = textarea.value.trim();
+      if (!text) {
+        alert("Please paste valid JSON text or choose a file first.");
+        return;
+      }
+
+      try {
+        const imported = JSON.parse(text);
+        if (typeof imported === 'object' && imported !== null) {
+          logs = imported;
+          saveLogs();
+          closeJsonModal();
+          alert("Backup successfully restored!");
+        } else {
+          throw new Error("Invalid JSON structure");
+        }
+      } catch (err) {
+        alert("Invalid JSON text format. Please double check the text.");
+      }
     }
   </script>
 </body>
