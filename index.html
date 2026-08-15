@@ -5,8 +5,9 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no, viewport-fit=cover">
   <title>Youssef's Shift Tracker</title>
   
-  <!-- iOS App Setup -->
+  <!-- iOS & Android Web App Setup -->
   <meta name="apple-mobile-web-app-title" content="Youssef's Shift Tracker">
+  <meta name="application-name" content="Youssef's Shift Tracker">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
   <meta name="theme-color" content="#1e1b4b">
@@ -35,118 +36,131 @@
     })();
   </script>
   
-  <!-- Dynamic Layered iOS Icon Generator Script -->
+  <!-- Dynamic Home Screen Icon & Web App Manifest Generator -->
   <script>
-    (function generateCustomAppIcon() {
+    (function generateCustomAppIconAndManifest() {
       const canvas = document.createElement('canvas');
       canvas.width = 512;
       canvas.height = 512;
       const ctx = canvas.getContext('2d');
 
-      ctx.clearRect(0, 0, 512, 512);
+      // Solid Background for Phone Home Screen Icon
+      const bgGrad = ctx.createLinearGradient(0, 0, 512, 512);
+      bgGrad.addColorStop(0, '#0f172a');
+      bgGrad.addColorStop(1, '#1e1b4b');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, 512, 512);
 
-      // BACK LAYER: Semi-Transparent Clock Overlay
-      ctx.globalAlpha = 0.45; 
-      const cx = 256, cy = 205, r = 130;
-
-      ctx.shadowColor = 'rgba(0,0,0,0.2)';
-      ctx.shadowBlur = 16;
-      ctx.shadowOffsetY = 6;
-
+      // Outer Clock Circle Badge
+      const cx = 256, cy = 256, r = 200;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fillStyle = '#64748b';
+      ctx.fillStyle = '#1e293b';
       ctx.fill();
+      ctx.lineWidth = 10;
+      ctx.strokeStyle = '#64748b';
+      ctx.stroke();
 
-      ctx.shadowColor = 'transparent';
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, r - 8, 0, 2 * Math.PI);
-      ctx.fillStyle = '#0f172a';
-      ctx.fill();
-
+      // Clock Hour Ticks
       for (let i = 0; i < 12; i++) {
         const angle = (i * 30) * Math.PI / 180;
-        const x1 = cx + Math.sin(angle) * (r - 28);
-        const y1 = cy - Math.cos(angle) * (r - 28);
-        const x2 = cx + Math.sin(angle) * (r - 12);
-        const y2 = cy - Math.cos(angle) * (r - 12);
+        const x1 = cx + Math.sin(angle) * (r - 35);
+        const y1 = cy - Math.cos(angle) * (r - 35);
+        const x2 = cx + Math.sin(angle) * (r - 15);
+        const y2 = cy - Math.cos(angle) * (r - 15);
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.strokeStyle = (i % 3 === 0) ? '#FFFFFF' : 'rgba(255,255,255,0.4)';
-        ctx.lineWidth = (i % 3 === 0) ? 5 : 2.5;
+        ctx.strokeStyle = (i % 3 === 0) ? '#ffffff' : 'rgba(255,255,255,0.4)';
+        ctx.lineWidth = (i % 3 === 0) ? 8 : 4;
         ctx.stroke();
       }
 
+      // Hour Hand
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(-60 * Math.PI / 180);
       ctx.beginPath();
-      ctx.moveTo(0, 12);
-      ctx.lineTo(0, -(r - 55));
-      ctx.strokeStyle = '#FFFFFF';
-      ctx.lineWidth = 9;
+      ctx.moveTo(0, 15);
+      ctx.lineTo(0, -(r - 80));
+      ctx.strokeStyle = '#ffffff';
+      ctx.lineWidth = 14;
       ctx.lineCap = 'round';
       ctx.stroke();
       ctx.restore();
 
+      // Minute Hand
       ctx.save();
       ctx.translate(cx, cy);
       ctx.rotate(60 * Math.PI / 180);
       ctx.beginPath();
-      ctx.moveTo(0, 12);
-      ctx.lineTo(0, -(r - 32));
-      ctx.strokeStyle = '#818cf8'; 
-      ctx.lineWidth = 7;
+      ctx.moveTo(0, 15);
+      ctx.lineTo(0, -(r - 50));
+      ctx.strokeStyle = '#818cf8';
+      ctx.lineWidth = 10;
       ctx.lineCap = 'round';
       ctx.stroke();
       ctx.restore();
 
-      ctx.save();
-      ctx.translate(cx, cy);
-      ctx.rotate(170 * Math.PI / 180);
+      // Center Pin
       ctx.beginPath();
-      ctx.moveTo(0, 16);
-      ctx.lineTo(0, -(r - 18));
-      ctx.strokeStyle = '#ef4444';
-      ctx.lineWidth = 3.5;
-      ctx.stroke();
-      ctx.restore();
-
-      ctx.beginPath();
-      ctx.arc(cx, cy, 7, 0, 2 * Math.PI);
+      ctx.arc(cx, cy, 12, 0, 2 * Math.PI);
       ctx.fillStyle = '#ef4444';
       ctx.fill();
 
-      // FRONT LAYER: "YM" Text Filled with Gradient
-      ctx.globalAlpha = 1.0;
-      const grad = ctx.createLinearGradient(100, 50, 400, 350);
-      grad.addColorStop(0, '#1e1b4b'); 
-      grad.addColorStop(1, '#312e81'); 
-
-      ctx.fillStyle = grad;
-      ctx.font = '900 320px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
+      // Foreground Text "YM"
+      ctx.font = '900 200px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
       ctx.textAlign = 'center';
       ctx.textBaseline = 'middle';
-      ctx.fillText('YM', 256, 205);
-
-      ctx.fillStyle = '#334155';
-      ctx.font = '700 30px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
-      ctx.textAlign = 'right';
-      ctx.textBaseline = 'alphabetic';
-      ctx.fillText("Youssef's Shift Tracker", 472, 465);
+      
+      const textGrad = ctx.createLinearGradient(150, 150, 360, 360);
+      textGrad.addColorStop(0, '#c7d2fe');
+      textGrad.addColorStop(0.5, '#e0e7ff');
+      textGrad.addColorStop(1, '#a5b4fc');
+      
+      ctx.fillStyle = textGrad;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 20;
+      ctx.shadowOffsetY = 8;
+      ctx.fillText('YM', cx, cy + 10);
 
       const iconUrl = canvas.toDataURL('image/png');
+
+      // Set iOS Apple Touch Icon
       const appleIcon = document.createElement('link');
       appleIcon.rel = 'apple-touch-icon';
       appleIcon.href = iconUrl;
       document.head.appendChild(appleIcon);
 
+      // Set Favicon
       const favicon = document.createElement('link');
       favicon.rel = 'icon';
+      favicon.type = 'image/png';
       favicon.href = iconUrl;
       document.head.appendChild(favicon);
+
+      // Inject Web App Manifest dynamically for Android & Home Screen Additions
+      const manifestObj = {
+        name: "Youssef's Shift Tracker",
+        short_name: "Youssef's Shift Tracker",
+        start_url: ".",
+        display: "standalone",
+        background_color: "#1e1b4b",
+        theme_color: "#1e1b4b",
+        icons: [
+          {
+            src: iconUrl,
+            sizes: "512x512",
+            type: "image/png",
+            purpose: "any maskable"
+          }
+        ]
+      };
+      const manifestStr = "data:application/manifest+json;base64," + btoa(unescape(encodeURIComponent(JSON.stringify(manifestObj))));
+      const manifestLink = document.createElement('link');
+      manifestLink.rel = 'manifest';
+      manifestLink.href = manifestStr;
+      document.head.appendChild(manifestLink);
     })();
   </script>
 
