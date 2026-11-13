@@ -492,7 +492,7 @@
       document.getElementById('current-date-display').innerText = new Date().toLocaleDateString('en-US', { weekday: 'long', month: 'short', day: 'numeric' });
       populatePayPeriods();
       renderTodayStatus();
-      renderPeriodData();
+      renderPeriodData(true);
       setInterval(runLiveTimer, 1000);
     };
 
@@ -575,13 +575,14 @@
         weeksView.classList.remove('hidden');
         weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20";
         homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40";
+        renderPeriodData(true);
       }
     }
 
     function saveLogs() {
       localStorage.setItem('shift_logs', JSON.stringify(logs));
       renderTodayStatus();
-      renderPeriodData();
+      renderPeriodData(false);
     }
 
     function roundTime(timeStr) {
@@ -853,19 +854,47 @@
     function populatePayPeriods() {
       payPeriodsList = [];
       const now = new Date();
+      const checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       let defaultIdx = 0;
 
-      for (let i = -4; i <= 3; i++) {
-        let start = new Date(now.getFullYear(), now.getMonth() + i, 16);
-        let end = new Date(now.getFullYear(), now.getMonth() + i + 1, 15);
+      // Start at least 4 months back, or earlier if logs exist
+      let minStart = new Date(now.getFullYear(), now.getMonth() - 4, 16);
+      const validDates = Object.keys(logs)
+        .map(k => {
+          const [y, m, d] = k.split('-').map(Number);
+          return (y && m && d) ? new Date(y, m - 1, d) : null;
+        })
+        .filter(d => d && !isNaN(d.getTime()));
+
+      if (validDates.length > 0) {
+        const earliestLog = new Date(Math.min(...validDates.map(d => d.getTime())));
+        const earliestPeriodStart = earliestLog.getDate() >= 16
+          ? new Date(earliestLog.getFullYear(), earliestLog.getMonth(), 16)
+          : new Date(earliestLog.getFullYear(), earliestLog.getMonth() - 1, 16);
+        if (earliestPeriodStart < minStart) {
+          minStart = earliestPeriodStart;
+        }
+      }
+
+      // Extend months through October 2027 (covers all of October 2027)
+      let maxStart = new Date(2027, 9, 16);
+      const currentPeriodStart = checkNow.getDate() >= 16
+        ? new Date(checkNow.getFullYear(), checkNow.getMonth(), 16)
+        : new Date(checkNow.getFullYear(), checkNow.getMonth() - 1, 16);
+      if (currentPeriodStart > maxStart) {
+        maxStart = new Date(currentPeriodStart.getFullYear(), currentPeriodStart.getMonth() + 3, 16);
+      }
+
+      let currentStart = new Date(minStart);
+      while (currentStart <= maxStart) {
+        let start = new Date(currentStart);
+        let end = new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 15);
         
         let startStr = start.toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
         let endStr = end.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
         let label = `${startStr} - ${endStr}`;
 
-        let checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
         let isCurrent = (checkNow >= start && checkNow <= end);
-
         if (isCurrent) defaultIdx = payPeriodsList.length;
 
         payPeriodsList.push({
@@ -873,6 +902,8 @@
           end: end.toISOString(),
           label: label
         });
+
+        currentStart = new Date(currentStart.getFullYear(), currentStart.getMonth() + 1, 16);
       }
 
       selectedPeriodIndex = defaultIdx;
@@ -910,7 +941,7 @@
     function selectPayPeriod(index) {
       selectedPeriodIndex = index;
       renderPayPeriodSliderCards();
-      renderPeriodData();
+      renderPeriodData(true);
     }
 
     function selectCurrentPayPeriod() {
@@ -930,7 +961,7 @@
 
     function selectSummaryCard(cardKey) {
       selectedCard = cardKey;
-      renderPeriodData();
+      renderPeriodData(false);
     }
 
     function updateSummaryCardStyles(periodBalance, punchedBalance) {
@@ -998,7 +1029,7 @@
       });
     }
 
-    function renderPeriodData() {
+    function renderPeriodData(selectCurrentWeekIfAvailable = false) {
       if (!payPeriodsList || payPeriodsList.length === 0) return;
 
       const period = payPeriodsList[selectedPeriodIndex];
@@ -1063,6 +1094,12 @@
         cur.setDate(cur.getDate() + 1);
       }
 
+      if (selectCurrentWeekIfAvailable) {
+        const todayKey = getTodayKey();
+        const currentWeekIdx = weeks.findIndex(w => w.some(day => day.dateKey === todayKey));
+        selectedWeek = currentWeekIdx !== -1 ? currentWeekIdx : 0;
+      }
+
       const periodBalance = totalWorked - totalTarget;
       const punchedBalance = punchedWorked - punchedTarget;
 
@@ -1092,6 +1129,13 @@
         btn.onclick = () => { selectedWeek = idx; renderWeeklyTabs(weeks); };
         tabsContainer.appendChild(btn);
       });
+
+      setTimeout(() => {
+        const activeWeekBtn = tabsContainer.children[selectedWeek];
+        if (activeWeekBtn) {
+          activeWeekBtn.scrollIntoView({ behavior: 'smooth', inline: 'center', block: 'nearest' });
+        }
+      }, 50);
 
       const activeWeek = weeks[selectedWeek] || [];
 
@@ -1292,7 +1336,12 @@
 
     function getAllPayPeriods() {
       const dateKeys = Object.keys(logs);
-      const dates = dateKeys.map(k => new Date(k)).filter(d => !isNaN(d.getTime()));
+      const dates = dateKeys
+        .map(k => {
+          const [y, m, d] = k.split('-').map(Number);
+          return (y && m && d) ? new Date(y, m - 1, d) : null;
+        })
+        .filter(d => d && !isNaN(d.getTime()));
       const now = new Date();
       
       let minDate = new Date(now.getFullYear(), now.getMonth() - 2, 16);
@@ -1300,7 +1349,9 @@
 
       if (dates.length > 0) {
         const earliestLog = new Date(Math.min(...dates.map(d => d.getTime())));
+        const latestLog = new Date(Math.max(...dates.map(d => d.getTime())));
         if (earliestLog < minDate) minDate = earliestLog;
+        if (latestLog > maxDate) maxDate = latestLog;
       }
 
       let pStart = minDate.getDate() >= 16 
@@ -1435,6 +1486,7 @@
           const importedLogs = JSON.parse(e.target.result);
           if (typeof importedLogs === 'object' && importedLogs !== null) {
             logs = importedLogs;
+            populatePayPeriods();
             saveLogs();
             closeJsonModal();
             alert("Backup successfully restored!");
@@ -1525,6 +1577,7 @@
         const imported = JSON.parse(text);
         if (typeof imported === 'object' && imported !== null) {
           logs = imported;
+          populatePayPeriods();
           saveLogs();
           closeJsonModal();
           alert("Backup successfully restored!");
