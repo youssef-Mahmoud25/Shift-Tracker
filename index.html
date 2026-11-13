@@ -10,7 +10,7 @@
   <meta name="application-name" content="Youssef's Shift Tracker">
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta id="meta-theme-color" name="theme-color" content="#060914">
+  <meta name="theme-color" content="#1e1b4b">
 
   <!-- Tailwind CSS with Class Dark Mode Enabled -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -28,13 +28,10 @@
     (function initTheme() {
       const savedTheme = localStorage.getItem('theme');
       const systemPrefersDark = window.matchMedia('(prefers-color-scheme: dark)').matches;
-      const metaTheme = document.getElementById('meta-theme-color');
       if (savedTheme === 'dark' || (!savedTheme && systemPrefersDark)) {
         document.documentElement.classList.add('dark');
-        if (metaTheme) metaTheme.setAttribute('content', '#060914');
       } else {
         document.documentElement.classList.remove('dark');
-        if (metaTheme) metaTheme.setAttribute('content', '#f4f6fa');
       }
     })();
   </script>
@@ -48,22 +45,18 @@
       const ctx = canvas.getContext('2d');
 
       const bgGrad = ctx.createLinearGradient(0, 0, 512, 512);
-      bgGrad.addColorStop(0, '#060914');
-      bgGrad.addColorStop(0.55, '#172554');
-      bgGrad.addColorStop(1, '#6b0f2b');
+      bgGrad.addColorStop(0, '#0f172a');
+      bgGrad.addColorStop(1, '#1e1b4b');
       ctx.fillStyle = bgGrad;
       ctx.fillRect(0, 0, 512, 512);
 
       const cx = 256, cy = 256, r = 200;
       ctx.beginPath();
       ctx.arc(cx, cy, r, 0, 2 * Math.PI);
-      ctx.fillStyle = '#0b1124';
+      ctx.fillStyle = '#1e293b';
       ctx.fill();
       ctx.lineWidth = 10;
-      const ringGrad = ctx.createLinearGradient(56, 56, 456, 456);
-      ringGrad.addColorStop(0, '#3b82f6');
-      ringGrad.addColorStop(1, '#be123c');
-      ctx.strokeStyle = ringGrad;
+      ctx.strokeStyle = '#64748b';
       ctx.stroke();
 
       for (let i = 0; i < 12; i++) {
@@ -75,7 +68,7 @@
         ctx.beginPath();
         ctx.moveTo(x1, y1);
         ctx.lineTo(x2, y2);
-        ctx.strokeStyle = (i % 3 === 0) ? '#fda4af' : 'rgba(255,255,255,0.38)';
+        ctx.strokeStyle = (i % 3 === 0) ? '#ffffff' : 'rgba(255,255,255,0.4)';
         ctx.lineWidth = (i % 3 === 0) ? 8 : 4;
         ctx.stroke();
       }
@@ -98,7 +91,7 @@
       ctx.beginPath();
       ctx.moveTo(0, 15);
       ctx.lineTo(0, -(r - 50));
-      ctx.strokeStyle = '#fb7185';
+      ctx.strokeStyle = '#818cf8';
       ctx.lineWidth = 10;
       ctx.lineCap = 'round';
       ctx.stroke();
@@ -106,7 +99,7 @@
 
       ctx.beginPath();
       ctx.arc(cx, cy, 12, 0, 2 * Math.PI);
-      ctx.fillStyle = '#e11d48';
+      ctx.fillStyle = '#ef4444';
       ctx.fill();
 
       ctx.font = '900 200px -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif';
@@ -114,13 +107,13 @@
       ctx.textBaseline = 'middle';
       
       const textGrad = ctx.createLinearGradient(150, 150, 360, 360);
-      textGrad.addColorStop(0, '#dbeafe');
-      textGrad.addColorStop(0.5, '#f8fafc');
-      textGrad.addColorStop(1, '#fecdd3');
+      textGrad.addColorStop(0, '#c7d2fe');
+      textGrad.addColorStop(0.5, '#e0e7ff');
+      textGrad.addColorStop(1, '#a5b4fc');
       
       ctx.fillStyle = textGrad;
-      ctx.shadowColor = 'rgba(0, 0, 0, 0.7)';
-      ctx.shadowBlur = 22;
+      ctx.shadowColor = 'rgba(0, 0, 0, 0.6)';
+      ctx.shadowBlur = 20;
       ctx.shadowOffsetY = 8;
       ctx.fillText('YM', cx, cy + 10);
 
@@ -142,8 +135,8 @@
         short_name: "Youssef's Shift Tracker",
         start_url: ".",
         display: "standalone",
-        background_color: "#060914",
-        theme_color: "#060914",
+        background_color: "#1e1b4b",
+        theme_color: "#1e1b4b",
         icons: [
           {
             src: iconUrl,
@@ -177,19 +170,6 @@
       padding-bottom: max(1.25rem, var(--sab));
       padding-left: max(0.75rem, var(--sal));
       padding-right: max(0.75rem, var(--sar));
-      background-color: #f4f6fa;
-      background-image:
-        radial-gradient(at 0% 0%, rgba(23, 37, 84, 0.11) 0px, transparent 52%),
-        radial-gradient(at 100% 8%, rgba(136, 19, 55, 0.10) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(30, 58, 138, 0.08) 0px, transparent 55%);
-    }
-
-    html.dark body {
-      background-color: #060914;
-      background-image:
-        radial-gradient(at 0% 0%, rgba(30, 58, 138, 0.32) 0px, transparent 54%),
-        radial-gradient(at 100% 6%, rgba(136, 19, 55, 0.28) 0px, transparent 50%),
-        radial-gradient(at 50% 100%, rgba(76, 5, 25, 0.24) 0px, transparent 55%);
     }
     
     .modal-container {
@@ -201,40 +181,40 @@
     .scrollbar-none { -ms-overflow-style: none; scrollbar-width: none; }
   </style>
 </head>
-<body class="text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
+<body class="bg-gradient-to-br from-slate-200/80 via-slate-100 to-indigo-100/50 dark:from-slate-950 dark:via-indigo-950/40 dark:to-slate-900 text-slate-800 dark:text-slate-100 font-sans transition-colors duration-300">
 
   <div class="max-w-lg mx-auto flex flex-col justify-between min-h-[calc(100dvh-2.5rem)]">
     
     <!-- TOP / MAIN SECTION CONTENT -->
     <div class="space-y-4">
-      <header class="flex justify-between items-center bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl p-3.5 sm:p-4 rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.5)] border border-slate-200/80 dark:border-white/10 transition-all">
+      <header class="flex justify-between items-center bg-gradient-to-r from-slate-100/95 via-indigo-50/80 to-slate-200/80 dark:from-slate-800/90 dark:via-slate-800/70 dark:to-indigo-950/50 backdrop-blur-md p-3.5 sm:p-4 rounded-2xl shadow-md border border-slate-300/50 dark:border-slate-700/60 transition-all">
         <div class="flex items-center gap-3">
-          <div class="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 rounded-2xl bg-gradient-to-br from-[#172554]/10 via-slate-200/40 to-[#881337]/15 dark:from-[#1e3a8a]/30 dark:via-slate-900/40 dark:to-[#881337]/30 border border-[#172554]/15 dark:border-rose-400/20 select-none shrink-0">
-            <svg class="absolute w-9 h-9 sm:w-10 sm:h-10 drop-shadow-sm z-0 opacity-45" viewBox="0 0 100 100">
-              <circle cx="50" cy="50" r="46" fill="#1e293b" stroke="#fda4af" stroke-width="2"/>
-              <circle cx="50" cy="50" r="40" fill="#060914"/>
+          <div class="relative flex items-center justify-center w-11 h-11 sm:w-12 sm:h-12 bg-transparent select-none shrink-0">
+            <svg class="absolute w-9 h-9 sm:w-10 sm:h-10 drop-shadow-sm z-0 opacity-40" viewBox="0 0 100 100">
+              <circle cx="50" cy="50" r="46" fill="#64748b" stroke="#cbd5e1" stroke-width="2"/>
+              <circle cx="50" cy="50" r="40" fill="#0f172a"/>
               <line x1="50" y1="14" x2="50" y2="20" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
               <line x1="86" y1="50" x2="80" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
               <line x1="50" y1="86" x2="50" y2="80" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
               <line x1="14" y1="50" x2="20" y2="50" stroke="#ffffff" stroke-width="3" stroke-linecap="round"/>
               <line x1="50" y1="50" x2="32" y2="28" stroke="#ffffff" stroke-width="5" stroke-linecap="round"/>
-              <line x1="50" y1="50" x2="70" y2="30" stroke="#fb7185" stroke-width="4" stroke-linecap="round"/>
-              <line x1="50" y1="56" x2="50" y2="18" stroke="#e11d48" stroke-width="2" stroke-linecap="round"/>
-              <circle cx="50" cy="50" r="4" fill="#e11d48"/>
+              <line x1="50" y1="50" x2="70" y2="30" stroke="#818cf8" stroke-width="4" stroke-linecap="round"/>
+              <line x1="50" y1="56" x2="50" y2="18" stroke="#ef4444" stroke-width="2" stroke-linecap="round"/>
+              <circle cx="50" cy="50" r="4" fill="#ef4444"/>
             </svg>
-            <span class="font-black text-xl sm:text-2xl tracking-tighter bg-gradient-to-br from-[#0f172a] via-[#172554] to-[#881337] dark:from-blue-200 dark:via-white dark:to-rose-300 bg-clip-text text-transparent z-10 select-none">YM</span>
+            <span class="font-black text-xl sm:text-2xl tracking-tighter bg-gradient-to-br from-indigo-950 via-indigo-900 to-purple-900 dark:from-indigo-300 dark:via-purple-200 dark:to-indigo-100 bg-clip-text text-transparent z-10 select-none">YM</span>
           </div>
 
           <div class="flex flex-col">
-            <h1 class="text-sm sm:text-base font-extrabold bg-gradient-to-r from-[#0f172a] via-[#172554] to-[#881337] dark:from-white dark:via-blue-100 dark:to-rose-200 bg-clip-text text-transparent leading-tight">Youssef's Shift Tracker</h1>
-            <p id="welcome-message" onclick="openNameModal()" class="text-xs font-bold text-[#881337] dark:text-rose-300 cursor-pointer hover:underline tracking-wide transition-all mt-0.5">
+            <h1 class="text-sm sm:text-base font-extrabold bg-gradient-to-r from-slate-900 via-indigo-950 to-slate-800 dark:from-slate-100 dark:via-indigo-200 dark:to-slate-200 bg-clip-text text-transparent leading-tight">Youssef's Shift Tracker</h1>
+            <p id="welcome-message" onclick="openNameModal()" class="text-xs font-bold text-indigo-600 dark:text-indigo-400 cursor-pointer hover:underline tracking-wide transition-all mt-0.5">
               Welcome, Guest 👋
             </p>
           </div>
         </div>
         
         <div class="flex items-center gap-2">
-          <button id="theme-toggle-btn" onclick="toggleTheme()" class="p-2 rounded-xl bg-slate-100/90 dark:bg-[#141d38] hover:scale-105 active:scale-95 transition-all text-sm shadow-sm border border-slate-200/90 dark:border-white/10">
+          <button id="theme-toggle-btn" onclick="toggleTheme()" class="p-2 rounded-xl bg-gradient-to-r from-slate-200 to-slate-300/80 dark:from-slate-700 dark:to-slate-800 hover:scale-105 transition-all text-sm shadow-sm border border-slate-300/60 dark:border-slate-600/60">
             🌙
           </button>
           <span class="text-xl">😉</span>
@@ -242,49 +222,46 @@
       </header>
 
       <!-- NAVIGATION TABS -->
-      <nav class="grid grid-cols-2 gap-2 bg-white/75 dark:bg-[#0d1428]/80 backdrop-blur-xl p-1.5 rounded-2xl border border-slate-200/80 dark:border-white/10 shadow-sm">
-        <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] shadow-md shadow-rose-950/25">
+      <nav class="grid grid-cols-2 gap-2 bg-gradient-to-r from-slate-300/60 via-slate-200/70 to-slate-300/60 dark:from-slate-800/90 dark:via-slate-800/60 dark:to-slate-800/90 p-1.5 rounded-2xl border border-slate-300/50 dark:border-slate-700/50 shadow-inner">
+        <button id="nav-btn-home" onclick="switchView('home')" class="py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20">
           🏠 Home
         </button>
-        <button id="nav-btn-weeks" onclick="switchView('weeks')" class="py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-[#172554] dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5">
+        <button id="nav-btn-weeks" onclick="switchView('weeks')" class="py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40">
           📅 Weekly Logs
         </button>
       </nav>
 
       <!-- HOME VIEW -->
       <div id="view-home" class="space-y-4">
-        <div class="relative overflow-hidden bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl p-4 sm:p-5 rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.06)] dark:shadow-[0_10px_35px_rgba(0,0,0,0.5)] border border-slate-200/80 dark:border-white/10 transition-colors">
-          <div class="pointer-events-none absolute -top-16 -right-16 w-40 h-40 rounded-full bg-[#172554]/10 dark:bg-[#1e3a8a]/25 blur-2xl"></div>
-          <div class="pointer-events-none absolute -bottom-16 -left-16 w-40 h-40 rounded-full bg-[#881337]/10 dark:bg-[#881337]/25 blur-2xl"></div>
-
-          <div class="relative text-center mb-3">
-            <p id="current-date-display" class="text-xs bg-gradient-to-r from-[#172554] to-[#881337] dark:from-blue-300 dark:to-rose-300 bg-clip-text text-transparent font-bold uppercase tracking-wider mb-1"></p>
-            <div id="punch-status" class="text-lg font-bold text-[#0f172a] dark:text-slate-100">Not Punched In</div>
+        <div class="bg-gradient-to-br from-slate-100/90 via-indigo-100/40 to-slate-200/60 dark:from-slate-800 dark:via-slate-800/90 dark:to-indigo-950/40 p-4 sm:p-5 rounded-2xl shadow-md border border-indigo-200/60 dark:border-indigo-900/40 transition-colors">
+          <div class="text-center mb-3">
+            <p id="current-date-display" class="text-xs text-indigo-600 dark:text-indigo-400 font-bold uppercase tracking-wider mb-1"></p>
+            <div id="punch-status" class="text-lg font-bold text-slate-700 dark:text-slate-200">Not Punched In</div>
             
-            <div id="live-timer-container" class="hidden mt-1.5">
+            <div id="live-timer-container" class="hidden mt-1">
               <span class="text-[10px] text-slate-500 dark:text-slate-400 uppercase font-bold tracking-wider">Shift Elapsed:</span>
-              <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent tracking-wider">00:00:00</div>
+              <div id="live-timer" class="text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider">00:00:00</div>
             </div>
           </div>
           
-          <div id="button-row" class="relative mb-2">
-            <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-600 via-teal-600 to-[#172554] hover:from-emerald-700 hover:via-teal-700 hover:to-[#0f172a] text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-950/20 transition-all text-sm transform active:scale-[0.99]">
+          <div id="button-row" class="mb-2">
+            <button id="punch-in-btn" onclick="punchInNow()" class="w-full bg-gradient-to-r from-emerald-500 via-emerald-600 to-teal-600 hover:from-emerald-600 hover:to-teal-700 active:from-emerald-700 active:to-teal-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-emerald-500/20 transition-all text-sm transform active:scale-[0.99]">
               Punch In
             </button>
             
-            <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-[#881337] via-[#9f1239] to-rose-700 hover:from-[#6b0f2b] hover:to-rose-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-rose-950/30 transition-all text-sm hidden transform active:scale-[0.99]">
+            <button id="punch-out-btn" onclick="punchOutNow()" class="w-full bg-gradient-to-r from-rose-500 via-rose-600 to-red-600 hover:from-rose-600 hover:to-red-700 active:from-rose-700 active:to-red-800 text-white font-bold py-3.5 px-4 rounded-xl shadow-md shadow-rose-500/20 transition-all text-sm hidden transform active:scale-[0.99]">
               Punch Out
             </button>
 
-            <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-slate-100/90 dark:bg-[#141d38] hover:bg-slate-200/80 dark:hover:bg-[#1c284c] text-[#172554] dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-200/90 dark:border-white/10 transition-all text-xs hidden shadow-sm">
+            <button id="reset-today-btn" onclick="clearTodayShift()" class="w-full bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 font-bold py-2.5 px-4 rounded-xl border border-slate-300/80 dark:border-slate-600 transition-all text-xs hidden shadow-sm">
               🔄 Reset Today
             </button>
           </div>
 
-          <div id="punched-info-container" class="relative flex flex-col items-center justify-center gap-1 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
+          <div id="punched-info-container" class="flex flex-col items-center justify-center gap-1 mt-3 text-xs font-semibold text-slate-700 dark:text-slate-300 hidden">
             <div class="flex items-center gap-2">
               <span id="punched-info-text"></span>
-              <button onclick="openTodayEditModal()" class="bg-slate-100 dark:bg-[#141d38] hover:bg-rose-50 dark:hover:bg-[#1c284c] text-[#881337] dark:text-rose-300 px-2.5 py-1 rounded-lg border border-slate-200/90 dark:border-white/10 font-bold text-xs transition-all flex items-center gap-1 shadow-sm">
+              <button onclick="openTodayEditModal()" class="bg-slate-200/90 dark:bg-slate-700/80 hover:bg-slate-300 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-2.5 py-1 rounded-lg border border-slate-300 dark:border-slate-600 font-bold text-xs transition-all flex items-center gap-1 shadow-sm">
                 ✏️ Edit
               </button>
             </div>
@@ -292,15 +269,15 @@
           </div>
         </div>
 
-        <div class="bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl p-3.5 sm:p-4 rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.45)] border border-slate-200/80 dark:border-white/10 transition-colors">
+        <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/30 p-3.5 sm:p-4 rounded-2xl shadow-sm border border-slate-300/60 dark:border-slate-700/60 transition-colors">
           <div class="flex justify-between items-center mb-2.5 px-1">
-            <button type="button" onclick="selectCurrentPayPeriod()" class="text-xs sm:text-sm font-extrabold bg-gradient-to-r from-[#172554] to-[#881337] dark:from-blue-300 dark:to-rose-300 bg-clip-text text-transparent uppercase tracking-wider select-none bg-transparent border-0 p-0 m-0 outline-none focus:outline-none active:outline-none hover:opacity-80 transition-opacity">
+            <button type="button" onclick="selectCurrentPayPeriod()" class="text-xs sm:text-sm font-extrabold text-indigo-600 dark:text-indigo-400 uppercase tracking-wider select-none bg-transparent border-0 p-0 m-0 outline-none focus:outline-none active:outline-none">
               Pay Period (16th - 15th)
             </button>
-            <span class="text-[10px] text-slate-500 dark:text-slate-400 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
+            <span class="text-[10px] text-slate-500 font-semibold tracking-wide flex items-center gap-1">👈 Slide 👉</span>
           </div>
           
-          <div id="pay-period-slider" class="flex gap-2 overflow-x-auto py-1 px-0.5 snap-x snap-mandatory scrollbar-none scroll-smooth">
+          <div id="pay-period-slider" class="flex gap-2 overflow-x-auto pb-1 snap-x snap-mandatory scrollbar-none scroll-smooth">
           </div>
         </div>
 
@@ -329,12 +306,12 @@
 
       <!-- WEEKLY LOGS VIEW -->
       <div id="view-weeks" class="hidden space-y-4">
-        <div class="bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl p-4 rounded-2xl shadow-[0_8px_30px_rgba(15,23,42,0.05)] dark:shadow-[0_8px_30px_rgba(0,0,0,0.45)] border border-slate-200/80 dark:border-white/10 transition-colors">
-          <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2.5 mb-3 border-b border-slate-200/80 dark:border-white/10 scrollbar-none">
+        <div class="bg-gradient-to-br from-slate-100/90 via-slate-200/50 to-indigo-100/40 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/40 p-4 rounded-2xl shadow-md border border-slate-300/60 dark:border-slate-700/60 transition-colors">
+          <div id="weekly-tabs" class="flex gap-2 overflow-x-auto pb-2 mb-3 border-b border-slate-300/60 dark:border-slate-700">
           </div>
 
-          <div id="weekly-summary-card" class="bg-gradient-to-r from-[#172554]/[0.07] via-[#881337]/[0.07] to-[#172554]/[0.07] dark:from-[#1e3a8a]/25 dark:via-[#881337]/20 dark:to-[#1e3a8a]/25 border border-[#172554]/15 dark:border-white/10 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
-            <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-[#172554] dark:text-blue-300">00:00</strong></div>
+          <div id="weekly-summary-card" class="bg-gradient-to-r from-slate-200/80 via-indigo-100/50 to-slate-200/80 dark:from-slate-900 dark:via-indigo-950/40 dark:to-slate-900 border border-indigo-200/60 dark:border-slate-700 p-3 rounded-xl mb-3 flex justify-between items-center text-xs shadow-inner">
+            <div><span class="text-slate-500 dark:text-slate-400 font-medium">Spent:</span> <strong id="week-spent" class="text-indigo-700 dark:text-indigo-400">00:00</strong></div>
             <div><span class="text-slate-500 dark:text-slate-400 font-medium">Needed:</span> <strong id="week-needed" class="text-slate-800 dark:text-slate-200">00:00</strong></div>
             <div><span class="text-slate-500 dark:text-slate-400 font-medium">Balance:</span> <strong id="week-balance" class="text-slate-700 dark:text-slate-300">00:00</strong></div>
           </div>
@@ -346,30 +323,30 @@
     </div>
 
     <!-- ANCHORED BOTTOM DATA CONTROLS -->
-    <footer class="mt-6 pt-3 border-t border-slate-200/80 dark:border-white/10 bg-white/80 dark:bg-[#0d1428]/80 backdrop-blur-xl p-3 rounded-2xl shadow-sm space-y-3">
+    <footer class="mt-6 pt-3 border-t border-slate-300/70 dark:border-slate-800 bg-slate-100/60 dark:bg-slate-900/40 backdrop-blur-sm p-3 rounded-2xl shadow-sm space-y-3">
       <p class="text-[10px] font-extrabold uppercase tracking-widest text-slate-400 dark:text-slate-500 text-center">
         Data Controls & Backups
       </p>
 
       <div class="grid grid-cols-3 gap-2 text-xs">
-        <button onclick="exportAllPeriodsToExcel()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
+        <button onclick="exportAllPeriodsToExcel()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-emerald-600 hover:bg-emerald-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📊</span>
           <span class="text-[11px]">Excel Export</span>
         </button>
 
-        <button onclick="exportData()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-[#172554] to-[#1e3a8a] hover:from-[#0f172a] hover:to-[#172554] text-white font-bold transition-all shadow-sm active:scale-95 text-center">
+        <button onclick="exportData()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📤</span>
           <span class="text-[11px]">Backup JSON</span>
         </button>
 
-        <button onclick="openJsonTextImportModal()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-gradient-to-br from-[#6b0f2b] to-[#9f1239] hover:from-[#4c0519] hover:to-[#881337] text-white font-bold transition-all shadow-sm active:scale-95 text-center">
+        <button onclick="openJsonTextImportModal()" class="flex flex-col items-center justify-center p-2 rounded-xl bg-purple-600 hover:bg-purple-700 text-white font-bold transition-all shadow-sm active:scale-95 text-center">
           <span class="text-base mb-0.5">📥</span>
           <span class="text-[11px]">Import File</span>
         </button>
       </div>
 
-      <div class="pt-2 border-t border-slate-200/70 dark:border-white/10 text-center select-none">
-        <p class="text-[11px] font-extrabold tracking-widest uppercase bg-gradient-to-r from-[#172554] via-[#6b0f2b] to-[#9f1239] dark:from-blue-300 dark:via-rose-300 dark:to-rose-400 bg-clip-text text-transparent opacity-90 hover:opacity-100 transition-opacity">
+      <div class="pt-2 border-t border-slate-200/60 dark:border-slate-800/60 text-center select-none">
+        <p class="text-[11px] font-extrabold tracking-widest uppercase bg-gradient-to-r from-indigo-600 via-purple-600 to-indigo-800 dark:from-indigo-400 dark:via-purple-400 dark:to-indigo-300 bg-clip-text text-transparent opacity-85 hover:opacity-100 transition-opacity">
           Designed by Youssef Mahmoud
         </p>
       </div>
@@ -378,53 +355,53 @@
   </div>
 
   <!-- USER NAME MODAL -->
-  <div id="name-modal" class="fixed inset-0 bg-[#060914]/75 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
-    <div class="bg-white/95 dark:bg-[#0d1428]/95 backdrop-blur-xl p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-white/15 transition-colors">
+  <div id="name-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="text-center mb-4">
         <span class="text-3xl mb-2 block">👋</span>
-        <h3 class="font-extrabold text-lg bg-gradient-to-r from-[#0f172a] via-[#172554] to-[#881337] dark:from-white dark:via-blue-200 dark:to-rose-300 bg-clip-text text-transparent">Welcome to Shift Tracker</h3>
+        <h3 class="font-extrabold text-lg bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent">Welcome to Shift Tracker</h3>
         <p class="text-xs text-slate-600 dark:text-slate-400 mt-1">Please enter your name to personalize your app experience.</p>
       </div>
 
       <div class="mb-5">
-        <input type="text" id="user-name-input" placeholder="Enter your name..." class="w-full bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-3 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm text-center">
+        <input type="text" id="user-name-input" placeholder="Enter your name..." class="w-full bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-3 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm text-center">
       </div>
 
-      <button onclick="saveUserName()" class="w-full bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] hover:opacity-95 text-white font-bold py-3 px-4 rounded-xl shadow-md text-xs transition-all transform active:scale-[0.98]">
+      <button onclick="saveUserName()" class="w-full bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white font-bold py-3 px-4 rounded-xl shadow-md shadow-indigo-500/20 text-xs transition-all transform active:scale-[0.98]">
         Get Started 🚀
       </button>
     </div>
   </div>
 
   <!-- EDIT MODAL -->
-  <div id="edit-modal" class="fixed inset-0 bg-[#060914]/75 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
-    <div class="bg-white/95 dark:bg-[#0d1428]/95 backdrop-blur-xl p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-white/15 transition-colors">
+  <div id="edit-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-6 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="flex justify-between items-center mb-4">
-        <h3 class="font-extrabold text-lg bg-gradient-to-r from-[#0f172a] via-[#172554] to-[#881337] dark:from-white dark:via-blue-200 dark:to-rose-300 bg-clip-text text-transparent" id="modal-title">Edit Entry</h3>
+        <h3 class="font-extrabold text-lg bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent" id="modal-title">Edit Entry</h3>
         <button onclick="closeModal()" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 font-bold p-1">✕</button>
       </div>
       
       <input type="hidden" id="edit-date">
 
-      <div class="mb-4 bg-gradient-to-r from-[#172554]/10 via-[#881337]/10 to-[#9f1239]/10 dark:from-[#1e3a8a]/25 dark:via-[#6b0f2b]/25 dark:to-[#9f1239]/25 p-3 rounded-xl border border-[#881337]/25 dark:border-rose-400/20 flex items-center justify-between shadow-sm">
-        <label for="edit-holiday" class="text-xs font-bold text-[#4c0519] dark:text-rose-200 cursor-pointer flex items-center gap-1.5">
+      <div class="mb-4 bg-gradient-to-r from-purple-200/70 via-purple-100/60 to-indigo-200/70 dark:from-purple-950/60 dark:via-purple-900/40 dark:to-indigo-950/60 p-3 rounded-xl border border-purple-300/80 dark:border-purple-800/60 flex items-center justify-between shadow-sm">
+        <label for="edit-holiday" class="text-xs font-bold text-purple-950 dark:text-purple-200 cursor-pointer flex items-center gap-1.5">
           <span>🎉 Mark as Holiday</span>
-          <span class="text-[10px] text-[#881337] dark:text-rose-300 font-semibold">(07:00 Credited)</span>
+          <span class="text-[10px] text-purple-700 dark:text-purple-300 font-semibold">(07:00 Credited)</span>
         </label>
-        <input type="checkbox" id="edit-holiday" onchange="toggleHolidayInput()" class="w-4 h-4 accent-[#881337] rounded focus:ring-[#881337] cursor-pointer">
+        <input type="checkbox" id="edit-holiday" onchange="toggleHolidayInput()" class="w-4 h-4 text-purple-600 rounded focus:ring-purple-500 cursor-pointer">
       </div>
       
       <div class="mb-4" id="in-field-wrapper">
         <label class="text-xs text-slate-600 dark:text-slate-400 font-bold block mb-1">Punch In Time</label>
         <div class="grid grid-cols-3 gap-2">
-          <select id="edit-in-hour" onchange="autoSetAMPM('in')" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-in-hour" onchange="autoSetAMPM('in')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
           </select>
-          <select id="edit-in-min" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-in-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
           </select>
-          <select id="edit-in-ampm" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-in-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="AM">AM</option><option value="PM">PM</option>
           </select>
         </div>
@@ -434,30 +411,30 @@
         <div class="flex items-center justify-between mb-1">
           <label class="text-xs text-slate-600 dark:text-slate-400 font-bold">Punch Out Time</label>
           <label class="text-[11px] text-slate-700 dark:text-slate-300 flex items-center gap-1 cursor-pointer font-bold">
-            <input type="checkbox" id="edit-has-out" onchange="toggleOutInput()" class="w-3.5 h-3.5 accent-[#881337] rounded cursor-pointer">
+            <input type="checkbox" id="edit-has-out" onchange="toggleOutInput()" class="w-3.5 h-3.5 text-indigo-600 rounded cursor-pointer">
             <span>Set Punch Out</span>
           </label>
         </div>
 
         <div class="grid grid-cols-3 gap-2">
-          <select id="edit-out-hour" onchange="autoSetAMPM('out')" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-out-hour" onchange="autoSetAMPM('out')" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="7">7</option><option value="8">8</option><option value="9">9</option><option value="10">10</option><option value="11">11</option><option value="12">12</option>
             <option value="1">1</option><option value="2">2</option><option value="3">3</option><option value="4">4</option><option value="5">5</option><option value="6">6</option>
           </select>
-          <select id="edit-out-min" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-out-min" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="00">00</option><option value="15">15</option><option value="30">30</option><option value="45">45</option>
           </select>
-          <select id="edit-out-ampm" class="bg-slate-100 dark:bg-[#141d38] border border-slate-200 dark:border-white/10 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-[#881337] outline-none transition shadow-sm">
+          <select id="edit-out-ampm" class="bg-slate-200/80 dark:bg-slate-700 border border-slate-300 dark:border-slate-600 p-2.5 rounded-xl font-bold text-slate-800 dark:text-slate-100 text-sm focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-sm">
             <option value="AM">AM</option><option value="PM">PM</option>
           </select>
         </div>
       </div>
       
       <div class="flex gap-2">
-        <button onclick="closeModal()" class="flex-1 bg-slate-100 dark:bg-[#141d38] hover:bg-slate-200 dark:hover:bg-[#1c284c] text-slate-700 dark:text-slate-200 py-2.5 rounded-xl font-bold text-xs border border-slate-200 dark:border-white/10 transition-all shadow-sm">
+        <button onclick="closeModal()" class="flex-1 bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 hover:from-slate-300 hover:to-slate-400 dark:hover:from-slate-600 dark:hover:to-slate-700 text-slate-700 dark:text-slate-200 py-2.5 rounded-xl font-bold text-xs transition-all shadow-sm">
           Cancel
         </button>
-        <button onclick="saveManualEdit()" class="flex-1 bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] hover:opacity-95 text-white py-2.5 rounded-xl font-bold text-xs shadow-md transition-all transform active:scale-[0.98]">
+        <button onclick="saveManualEdit()" class="flex-1 bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 hover:from-indigo-700 hover:to-purple-700 text-white py-2.5 rounded-xl font-bold text-xs shadow-md shadow-indigo-500/20 transition-all transform active:scale-[0.98]">
           Save Changes
         </button>
       </div>
@@ -465,10 +442,10 @@
   </div>
 
   <!-- GUARANTEED MOBILE JSON TEXT BACKUP & IMPORT MODAL -->
-  <div id="json-modal" class="fixed inset-0 bg-[#060914]/75 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
-    <div class="bg-white/95 dark:bg-[#0d1428]/95 backdrop-blur-xl p-5 rounded-3xl shadow-2xl w-full max-w-sm border border-slate-200 dark:border-white/15 transition-colors">
+  <div id="json-modal" class="fixed inset-0 bg-slate-950/70 backdrop-blur-sm hidden flex items-center justify-center p-4 z-50 modal-container">
+    <div class="bg-gradient-to-br from-slate-100 via-slate-200/80 to-indigo-100/60 dark:from-slate-800 dark:via-slate-800 dark:to-indigo-950/60 p-5 rounded-3xl shadow-2xl w-full max-w-sm border border-indigo-200 dark:border-indigo-900/50 transition-colors">
       <div class="flex justify-between items-center mb-3">
-        <h3 id="json-modal-title" class="font-extrabold text-base bg-gradient-to-r from-[#0f172a] via-[#172554] to-[#881337] dark:from-white dark:via-blue-200 dark:to-rose-300 bg-clip-text text-transparent">JSON Backup & Restore</h3>
+        <h3 id="json-modal-title" class="font-extrabold text-base bg-gradient-to-r from-slate-800 to-indigo-900 dark:from-slate-100 dark:to-indigo-200 bg-clip-text text-transparent">JSON Backup & Restore</h3>
         <button onclick="closeJsonModal()" class="text-slate-500 hover:text-slate-700 dark:hover:text-slate-200 font-bold p-1">✕</button>
       </div>
       <p id="json-modal-desc" class="text-xs text-slate-600 dark:text-slate-400 mb-3">
@@ -477,24 +454,24 @@
 
       <!-- Direct File Import Option Inside Modal -->
       <div id="json-file-upload-container" class="hidden mb-3">
-        <label class="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-[#6b0f2b] to-[#9f1239] hover:opacity-95 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs cursor-pointer transition-all">
+        <label class="flex items-center justify-center gap-2 w-full bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs cursor-pointer transition-all">
           <span>📁</span> Select .JSON Backup File
           <input type="file" id="import-file" onchange="importData(event)" class="hidden" accept=".json">
         </label>
       </div>
 
       <!-- Direct Download Link for strict WebViews/Safari Standalone -->
-      <a id="json-download-link" href="#" download="shift_backup.json" target="_blank" class="hidden mb-3 w-full text-center bg-gradient-to-r from-[#172554] to-[#1e3a8a] hover:opacity-95 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs transition-all">
+      <a id="json-download-link" href="#" download="shift_backup.json" target="_blank" class="hidden mb-3 w-full text-center bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-2.5 px-3 rounded-xl shadow-md text-xs transition-all">
         💾 Tap Here to Download .JSON File
       </a>
 
-      <textarea id="json-textarea" rows="7" class="w-full bg-slate-100 dark:bg-[#060914]/90 border border-slate-200 dark:border-white/10 p-3 rounded-xl font-mono text-[11px] text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-[#881337] outline-none transition shadow-inner resize-none mb-3"></textarea>
+      <textarea id="json-textarea" rows="7" class="w-full bg-slate-200/80 dark:bg-slate-900/80 border border-slate-300 dark:border-slate-700 p-3 rounded-xl font-mono text-[11px] text-slate-800 dark:text-slate-200 focus:ring-2 focus:ring-indigo-500 outline-none transition shadow-inner resize-none mb-3"></textarea>
 
       <div class="flex gap-2">
-        <button id="json-copy-btn" onclick="copyJsonToClipboard()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-700 hover:from-emerald-700 hover:to-teal-800 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
+        <button id="json-copy-btn" onclick="copyJsonToClipboard()" class="flex-1 bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-700 hover:to-teal-700 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
           📋 Copy JSON
         </button>
-        <button id="json-apply-btn" onclick="restoreJsonFromText()" class="flex-1 bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] hover:opacity-95 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
+        <button id="json-apply-btn" onclick="restoreJsonFromText()" class="flex-1 bg-gradient-to-r from-purple-600 to-indigo-600 hover:from-purple-700 hover:to-indigo-700 text-white font-bold py-2.5 rounded-xl shadow-md text-xs transition-all">
           📥 Restore JSON
         </button>
       </div>
@@ -549,10 +526,6 @@
     function toggleTheme() {
       const isDark = document.documentElement.classList.toggle('dark');
       localStorage.setItem('theme', isDark ? 'dark' : 'light');
-      const metaTheme = document.getElementById('meta-theme-color');
-      if (metaTheme) {
-        metaTheme.setAttribute('content', isDark ? '#060914' : '#f4f6fa');
-      }
       updateThemeButtonUI();
     }
 
@@ -595,13 +568,13 @@
       if (view === 'home') {
         homeView.classList.remove('hidden');
         weeksView.classList.add('hidden');
-        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] shadow-md shadow-rose-950/25";
-        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-[#172554] dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5";
+        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20";
+        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40";
       } else {
         homeView.classList.add('hidden');
         weeksView.classList.remove('hidden');
-        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] shadow-md shadow-rose-950/25";
-        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-[#172554] dark:hover:text-white hover:bg-slate-100/80 dark:hover:bg-white/5";
+        weeksBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/20";
+        homeBtn.className = "py-2 text-xs font-bold rounded-xl transition-all text-slate-700 dark:text-slate-400 hover:text-slate-900 dark:hover:text-slate-200 hover:bg-slate-300/50 dark:hover:bg-slate-700/40";
         renderPeriodData(true);
       }
     }
@@ -790,7 +763,7 @@
         
         timerContainer.classList.add('hidden');
         statusEl.innerText = "Holiday 🎉";
-        statusEl.className = "text-lg font-bold text-[#881337] dark:text-rose-300";
+        statusEl.className = "text-lg font-bold text-purple-700 dark:text-purple-400";
       } else if (!entry.in) {
         punchInBtn.classList.remove('hidden');
         punchOutBtn.classList.add('hidden');
@@ -799,7 +772,7 @@
         restrictionText.classList.add('hidden');
         timerContainer.classList.add('hidden');
         statusEl.innerText = "Not Punched In";
-        statusEl.className = "text-lg font-bold text-[#0f172a] dark:text-slate-100";
+        statusEl.className = "text-lg font-bold text-slate-700 dark:text-slate-200";
       } else if (entry.in && !entry.out) {
         punchInBtn.classList.add('hidden');
         punchOutBtn.classList.remove('hidden');
@@ -826,7 +799,7 @@
         
         timerContainer.classList.add('hidden');
         statusEl.innerText = "Shift Completed ✅";
-        statusEl.className = "text-lg font-bold bg-gradient-to-r from-[#172554] to-[#881337] dark:from-blue-300 dark:to-rose-300 bg-clip-text text-transparent";
+        statusEl.className = "text-lg font-bold text-indigo-700 dark:text-indigo-400";
       }
     }
 
@@ -854,9 +827,9 @@
         timerEl.innerText = `${prefix}${String(hrs).padStart(2,'0')}:${String(mins).padStart(2,'0')}:${String(secs).padStart(2,'0')}`;
 
         if (isNegative) {
-          timerEl.className = "text-2xl font-black bg-gradient-to-r from-amber-600 to-[#881337] dark:from-amber-400 dark:to-rose-400 bg-clip-text text-transparent tracking-wider";
+          timerEl.className = "text-2xl font-black bg-gradient-to-r from-amber-600 to-orange-500 bg-clip-text text-transparent tracking-wider";
         } else {
-          timerEl.className = "text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-600 dark:from-emerald-400 dark:to-teal-300 bg-clip-text text-transparent tracking-wider";
+          timerEl.className = "text-2xl font-black bg-gradient-to-r from-emerald-600 to-teal-500 bg-clip-text text-transparent tracking-wider";
         }
       }
     }
@@ -884,6 +857,7 @@
       const checkNow = new Date(now.getFullYear(), now.getMonth(), now.getDate());
       let defaultIdx = 0;
 
+      // Start at least 4 months back, or earlier if logs exist
       let minStart = new Date(now.getFullYear(), now.getMonth() - 4, 16);
       const validDates = Object.keys(logs)
         .map(k => {
@@ -946,9 +920,9 @@
         card.id = `period-chip-${idx}`;
         
         if (isSelected) {
-          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] shadow-md shadow-rose-950/25 ring-2 ring-[#881337]/30 dark:ring-rose-400/35 transition-all duration-200 cursor-pointer transform scale-[1.02]";
+          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-white bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 shadow-md shadow-indigo-500/30 ring-2 ring-indigo-400/50 transition-all duration-200 cursor-pointer transform scale-[1.02]";
         } else {
-          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-slate-700 dark:text-slate-300 bg-slate-100/90 dark:bg-[#141d38]/90 hover:bg-white dark:hover:bg-[#1c284c] border border-slate-200/90 dark:border-white/10 transition-all duration-200 cursor-pointer opacity-90 hover:opacity-100";
+          card.className = "snap-center shrink-0 px-4 py-2.5 rounded-xl font-bold text-xs text-slate-700 dark:text-slate-300 bg-slate-200/90 dark:bg-slate-700/70 hover:bg-slate-300 dark:hover:bg-slate-700 border border-slate-300/80 dark:border-slate-600/60 transition-all duration-200 cursor-pointer opacity-90 hover:opacity-100";
         }
 
         card.innerText = period.label;
@@ -1005,21 +979,21 @@
 
         if (key === 'spent') {
           if (isActive) {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-[#0f172a] via-[#172554] to-[#1e3a8a] text-white border-2 border-blue-300/70 dark:border-blue-400/50 shadow-lg shadow-blue-950/30 scale-[1.02] ring-2 ring-blue-500/30 z-10 select-none";
-            titleEl.className = "text-xs font-bold uppercase tracking-wider text-blue-200";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-indigo-600 via-indigo-500 to-purple-600 text-white border-2 border-indigo-300 dark:border-indigo-400 shadow-lg shadow-indigo-500/30 scale-[1.02] ring-2 ring-indigo-400/40 z-10 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-indigo-100";
             valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl border border-[#172554]/15 dark:border-blue-400/15 shadow-sm opacity-85 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-xs font-bold uppercase tracking-wider text-[#172554] dark:text-blue-300";
-            valEl.className = "text-xl font-black mt-1 text-[#0f172a] dark:text-blue-200";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-indigo-100/80 via-slate-100 to-indigo-100/40 dark:from-indigo-950/40 dark:via-slate-800 dark:to-slate-800/80 border border-indigo-200 dark:border-indigo-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-indigo-700 dark:text-indigo-400";
+            valEl.className = "text-xl font-black mt-1 text-indigo-800 dark:text-indigo-400";
           }
         } else if (key === 'needed') {
           if (isActive) {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-[#1e293b] via-[#31102f] to-[#4c0519] text-white border-2 border-rose-300/60 dark:border-rose-400/40 shadow-lg shadow-rose-950/30 scale-[1.02] ring-2 ring-rose-500/25 z-10 select-none";
-            titleEl.className = "text-xs font-bold uppercase tracking-wider text-rose-200";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-br from-slate-700 via-slate-800 to-indigo-900 text-white border-2 border-slate-400 dark:border-slate-300 shadow-lg shadow-slate-500/30 scale-[1.02] ring-2 ring-slate-400/40 z-10 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-slate-300";
             valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl border border-slate-200/90 dark:border-white/10 shadow-sm opacity-85 hover:opacity-100 scale-100 select-none";
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-slate-200/80 via-slate-100 to-slate-200/40 dark:from-slate-700/30 dark:via-slate-800 dark:to-slate-800/80 border border-slate-300/80 dark:border-slate-700/60 opacity-80 hover:opacity-100 scale-100 select-none";
             titleEl.className = "text-xs font-bold uppercase tracking-wider text-slate-600 dark:text-slate-400";
             valEl.className = "text-xl font-black mt-1 text-slate-800 dark:text-slate-200";
           }
@@ -1027,29 +1001,29 @@
           const isPos = periodBalance >= 0;
           if (isActive) {
             const activeGradient = isPos 
-              ? "bg-gradient-to-br from-emerald-600 via-teal-700 to-[#172554] border-2 border-emerald-300/70 dark:border-emerald-400/50 shadow-lg shadow-emerald-950/30 ring-2 ring-emerald-400/30"
-              : "bg-gradient-to-br from-[#6b0f2b] via-[#881337] to-[#be123c] border-2 border-rose-300/70 dark:border-rose-400/50 shadow-lg shadow-rose-950/35 ring-2 ring-rose-400/30";
+              ? "bg-gradient-to-br from-emerald-500 via-teal-600 to-indigo-600 border-2 border-emerald-300 dark:border-emerald-400 shadow-lg shadow-teal-500/30 ring-2 ring-emerald-400/40"
+              : "bg-gradient-to-br from-rose-500 via-pink-600 to-purple-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
             cardEl.className = `p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.02] z-10 select-none`;
             titleEl.className = "text-xs font-bold uppercase tracking-wider text-white/90";
             valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl border border-[#881337]/15 dark:border-rose-400/15 shadow-sm opacity-85 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-xs font-bold uppercase tracking-wider text-[#881337] dark:text-rose-300";
-            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#9f1239] dark:text-rose-400'}`;
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-sky-100/80 via-slate-100 to-sky-100/40 dark:from-sky-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-sky-200 dark:border-sky-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-sky-700 dark:text-sky-400";
+            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
           }
         } else if (key === 'punched') {
           const isPos = punchedBalance >= 0;
           if (isActive) {
             const activeGradient = isPos 
-              ? "bg-gradient-to-br from-[#172554] via-[#4c0519] to-teal-700 border-2 border-rose-200/70 dark:border-rose-300/50 shadow-lg shadow-rose-950/30 ring-2 ring-rose-400/30"
-              : "bg-gradient-to-br from-[#4c0519] via-[#881337] to-[#9f1239] border-2 border-rose-300/70 dark:border-rose-400/50 shadow-lg shadow-rose-950/35 ring-2 ring-rose-400/30";
+              ? "bg-gradient-to-br from-purple-600 via-indigo-600 to-teal-600 border-2 border-purple-300 dark:border-purple-400 shadow-lg shadow-purple-500/30 ring-2 ring-purple-400/40"
+              : "bg-gradient-to-br from-rose-600 via-purple-600 to-indigo-600 border-2 border-rose-300 dark:border-rose-400 shadow-lg shadow-rose-500/30 ring-2 ring-rose-400/40";
             cardEl.className = `p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 ${activeGradient} text-white scale-[1.02] z-10 select-none`;
             titleEl.className = "text-xs font-bold uppercase tracking-wider text-white/90";
             valEl.className = "text-xl font-black mt-1 text-white";
           } else {
-            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-white/85 dark:bg-[#0d1428]/80 backdrop-blur-xl border border-[#172554]/15 dark:border-white/10 shadow-sm opacity-85 hover:opacity-100 scale-100 select-none";
-            titleEl.className = "text-xs font-bold uppercase tracking-wider text-[#172554] dark:text-rose-300";
-            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#9f1239] dark:text-rose-400'}`;
+            cardEl.className = "p-3.5 rounded-2xl text-center cursor-pointer transition-all duration-200 bg-gradient-to-b from-purple-100/80 via-slate-100 to-indigo-100/40 dark:from-purple-950/30 dark:via-slate-800 dark:to-slate-800/80 border border-purple-200 dark:border-purple-900/40 opacity-80 hover:opacity-100 scale-100 select-none";
+            titleEl.className = "text-xs font-bold uppercase tracking-wider text-purple-700 dark:text-purple-400";
+            valEl.className = `text-xl font-black mt-1 ${isPos ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400'}`;
           }
         }
       });
@@ -1148,8 +1122,8 @@
         const btn = document.createElement('button');
         btn.className = `px-3.5 py-1.5 text-xs rounded-xl font-bold whitespace-nowrap transition-all shadow-sm ${
           selectedWeek === idx 
-            ? 'bg-gradient-to-r from-[#172554] via-[#4c0519] to-[#881337] dark:from-[#1e3a8a] dark:via-[#6b0f2b] dark:to-[#9f1239] text-white shadow-rose-950/25' 
-            : 'bg-slate-100/90 dark:bg-[#141d38] text-slate-700 dark:text-slate-300 border border-slate-200/80 dark:border-white/10 hover:bg-white dark:hover:bg-[#1c284c]'
+            ? 'bg-gradient-to-r from-indigo-600 via-indigo-500 to-purple-600 text-white shadow-indigo-500/20' 
+            : 'bg-gradient-to-r from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 text-slate-700 dark:text-slate-300 hover:scale-105'
         }`;
         btn.innerText = `Week ${idx + 1}`;
         btn.onclick = () => { selectedWeek = idx; renderWeeklyTabs(weeks); };
@@ -1178,7 +1152,7 @@
         wBalEl.className = "text-emerald-600 dark:text-emerald-400 font-bold";
       } else {
         wBalEl.innerText = formatHoursToHHMM(wBalance);
-        wBalEl.className = "text-[#9f1239] dark:text-rose-400 font-bold";
+        wBalEl.className = "text-rose-600 dark:text-rose-400 font-bold";
       }
 
       renderLogsList(activeWeek);
@@ -1192,16 +1166,16 @@
 
       weekData.forEach(item => {
         const div = document.createElement('div');
-        div.className = "flex items-center justify-between p-3 bg-slate-50/90 dark:bg-[#141d38]/75 rounded-xl text-xs border border-slate-200/80 dark:border-white/10 hover:border-[#881337]/35 dark:hover:border-rose-400/35 hover:bg-white dark:hover:bg-[#192444] transition-all shadow-sm";
+        div.className = "flex items-center justify-between p-3 bg-gradient-to-r from-slate-100/90 via-slate-200/40 to-indigo-100/30 dark:from-slate-900/80 dark:via-slate-900/60 dark:to-indigo-950/30 rounded-xl text-xs border border-slate-300/70 dark:border-slate-700/60 hover:from-indigo-100/70 hover:to-slate-200 dark:hover:from-slate-800 dark:hover:to-indigo-950/50 transition-all shadow-sm";
 
         const isFriday = item.dayOfWeek === 5;
         const isSaturday = item.dayOfWeek === 6;
         const isHoliday = item.log.isHoliday;
         
         let tag = '';
-        if (isHoliday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-[#4c0519] to-[#881337] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Holiday 🎉</span>';
-        else if (isFriday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-[#881337] to-[#be123c] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Friday</span>';
-        else if (isSaturday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-[#172554] to-[#1e40af] text-white font-bold px-2 py-0.5 rounded-full shadow-sm">OT Saturday</span>';
+        if (isHoliday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-purple-600 to-indigo-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Holiday 🎉</span>';
+        else if (isFriday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-rose-500 to-pink-600 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">Friday</span>';
+        else if (isSaturday) tag = '<span class="inline-block text-[10px] bg-gradient-to-r from-amber-500 to-orange-500 text-white font-bold px-2 py-0.5 rounded-full shadow-sm">OT Saturday</span>';
 
         const day = String(item.date.getDate()).padStart(2, '0');
         const month = String(item.date.getMonth() + 1).padStart(2, '0');
@@ -1211,23 +1185,23 @@
         const timeDisplay = isHoliday ? '07:00 Credited (Holiday)' : `${item.log.in ? format12Hour(item.log.in) : '--:--'} - ${item.log.out ? format12Hour(item.log.out) : '--:--'}`;
 
         const balText = formatHoursToHHMM(item.balance, true);
-        const balClass = item.balance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-[#9f1239] dark:text-rose-400';
+        const balClass = item.balance >= 0 ? 'text-emerald-700 dark:text-emerald-400' : 'text-rose-700 dark:text-rose-400';
 
         const tagHtml = tag ? `<div class="mt-0.5">${tag}</div>` : '';
 
         div.innerHTML = `
           <div class="cursor-pointer flex-1" onclick="openEditModal('${item.dateKey}', '${item.log.in || ''}', '${item.log.out || ''}', ${!!isHoliday})">
-            <div class="font-bold text-[#0f172a] dark:text-slate-100">${dayNames[item.dayOfWeek]} ${dateFormatted}</div>
+            <div class="font-bold text-slate-800 dark:text-slate-200">${dayNames[item.dayOfWeek]} ${dateFormatted}</div>
             ${tagHtml}
             <div class="text-slate-500 dark:text-slate-400 mt-0.5">${timeDisplay}</div>
           </div>
           
           <div class="text-right mr-3 cursor-pointer" onclick="openEditModal('${item.dateKey}', '${item.log.in || ''}', '${item.log.out || ''}', ${!!isHoliday})">
-            <div class="font-bold text-[#0f172a] dark:text-slate-100">Spent: ${formatHoursToHHMM(item.worked)}</div>
+            <div class="font-bold text-slate-800 dark:text-slate-100">Spent: ${formatHoursToHHMM(item.worked)}</div>
             <div class="text-[10px] text-slate-500 dark:text-slate-400">Need: ${formatHoursToHHMM(item.target)} | <span class="${balClass} font-semibold">${balText}</span></div>
           </div>
 
-          <button onclick="deleteShiftDay('${item.dateKey}', event)" class="text-slate-400 dark:text-slate-500 hover:text-[#9f1239] dark:hover:text-rose-400 p-1 rounded font-bold transition-all" title="Delete Day">
+          <button onclick="deleteShiftDay('${item.dateKey}', event)" class="text-slate-400 dark:text-slate-500 hover:text-rose-600 dark:hover:text-rose-400 p-1 rounded font-bold transition-all" title="Delete Day">
             🗑️
           </button>
         `;
